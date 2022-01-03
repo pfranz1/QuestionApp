@@ -7,12 +7,29 @@ class QuestionInterface extends StatelessWidget {
   final Question? question;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 600,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
           QuestionHeader(questionText: question?.questionText),
           QuestionOptionList(optionList: question?.options ?? []),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).colorScheme.secondary),
+                    child: Text(
+                      'Submit',
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: Theme.of(context).colorScheme.onSecondary),
+                    )),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -62,37 +79,34 @@ class _QuestionOptionListState extends State<QuestionOptionList> {
         (avalaibleHeight - (offsetPerOption * widget.optionList.length)) /
             widget.optionList.length;
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        height: avalaibleHeight,
-        decoration: BoxDecoration(
-          border: Border.all(width: 2.0),
-          color: Theme.of(context).colorScheme.surface,
+    return Container(
+      height: avalaibleHeight,
+      decoration: BoxDecoration(
+        border: Border.all(width: 2.0),
+        color: Theme.of(context).colorScheme.surface,
+      ),
+      child: ReorderableListView(
+        buildDefaultDragHandles: true,
+        header: const SizedBox(
+          height: offsetPerOption,
         ),
-        child: ReorderableListView(
-          buildDefaultDragHandles: true,
-          header: const SizedBox(
-            height: offsetPerOption,
-          ),
-          children: [
-            for (String? option in widget.optionList)
-              QuestionOptionElement(
-                key: option != null ? Key(option) : UniqueKey(),
-                option: option,
-                height: avalaibleHeightPerOption,
-              ),
-          ],
-          onReorder: (int oldIndex, int newIndex) {
-            setState(() {
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
-              final String? item = widget.optionList.removeAt(oldIndex);
-              widget.optionList.insert(newIndex, item);
-            });
-          },
-        ),
+        children: [
+          for (String? option in widget.optionList)
+            QuestionOptionElement(
+              key: option != null ? Key(option) : UniqueKey(),
+              option: option,
+              height: avalaibleHeightPerOption,
+            ),
+        ],
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+            final String? item = widget.optionList.removeAt(oldIndex);
+            widget.optionList.insert(newIndex, item);
+          });
+        },
       ),
     );
   }
