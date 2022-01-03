@@ -11,7 +11,10 @@ class QuestionInterface extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          QuestionHeader(questionText: question?.questionText),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: QuestionHeader(questionText: question?.questionText),
+          ),
           QuestionOptionList(optionList: question?.options ?? []),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,

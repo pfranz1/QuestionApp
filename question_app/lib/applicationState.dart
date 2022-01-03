@@ -35,6 +35,7 @@ class ApplicationState extends ChangeNotifier {
 
   @override
   void dispose() {
+    _questionSubscription?.cancel();
     super.dispose();
   }
 }
