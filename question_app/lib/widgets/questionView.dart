@@ -4,15 +4,15 @@ import 'package:question_app/models/question.dart';
 class QuestionInterface extends StatelessWidget {
   const QuestionInterface({Key? key, required this.question}) : super(key: key);
 
-  final Question question;
+  final Question? question;
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 600,
       child: Column(
         children: [
-          QuestionHeader(questionText: question.questionText),
-          QuestionOptionList(optionList: question.options),
+          QuestionHeader(questionText: question?.questionText),
+          QuestionOptionList(optionList: question?.options ?? []),
         ],
       ),
     );

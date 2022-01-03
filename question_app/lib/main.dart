@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:question_app/applicationState.dart';
 import 'package:question_app/pages/questionPage.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => ApplicationState(),
+    builder: (context, _) => MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
