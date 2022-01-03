@@ -27,9 +27,16 @@ class QuestionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text(
-        questionText ?? 'No question avaliable.',
-        style: Theme.of(context).textTheme.headline3,
+      color: Theme.of(context).colorScheme.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          questionText ?? 'No question avaliable.',
+          style: Theme.of(context)
+              .textTheme
+              .headline2!
+              .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+        ),
       ),
     );
   }
