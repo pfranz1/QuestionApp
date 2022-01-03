@@ -2,11 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:question_app/models/question.dart';
 
 class QuestionInterface extends StatelessWidget {
-  const QuestionInterface({Key? key, required this.question}) : super(key: key);
+  QuestionInterface({Key? key, required this.question}) : super(key: key) {
+    questionOptionsList =
+        QuestionOptionList(optionList: question?.options ?? []);
+    initalOptionOrdering = List<String?>.from(question?.options ?? []);
+  }
 
   final Question? question;
+  late List<String?> initalOptionOrdering;
+  late QuestionOptionList questionOptionsList;
+
+  void submitRanking() {
+    List<String?> ordering = questionOptionsList.optionList;
+    String rankings = '';
+    for (String? element in initalOptionOrdering) {
+      final int rank = ordering.indexOf(element ?? '') + 1;
+      rankings += "$rank,";
+    }
+    print(rankings);
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (question == null) {
+      return const SizedBox(
+        height: 100,
+        width: 100,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -15,14 +39,16 @@ class QuestionInterface extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: QuestionHeader(questionText: question?.questionText),
           ),
-          QuestionOptionList(optionList: question?.options ?? []),
+          questionOptionsList,
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      submitRanking();
+                    },
                     style: ElevatedButton.styleFrom(
                         primary: Theme.of(context).colorScheme.secondary),
                     child: Text(
