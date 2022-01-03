@@ -45,24 +45,46 @@ class QuestionOptionList extends StatefulWidget {
   _QuestionOptionListState createState() => _QuestionOptionListState();
 }
 
+const offsetPerOption = 4.0; //margin + border width
+
 class _QuestionOptionListState extends State<QuestionOptionList> {
   @override
   Widget build(BuildContext context) {
+    final double avalaibleHeight = MediaQuery.of(context).size.height * 0.45;
+    final double avalaibleHeightPerOption =
+        (avalaibleHeight - (offsetPerOption * widget.optionList.length)) /
+            widget.optionList.length;
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(
+        height: avalaibleHeight,
         decoration: BoxDecoration(
           border: Border.all(width: 2.0),
           color: Theme.of(context).colorScheme.surface,
         ),
-        child: ListView.builder(
-          itemBuilder: (BuildContext context, int index) {
-            return QuestionOptionElement(
-              option: widget.optionList.elementAt(index),
-            );
+        child: ReorderableListView(
+          buildDefaultDragHandles: true,
+          header: const SizedBox(
+            height: offsetPerOption,
+          ),
+          children: [
+            for (String? option in widget.optionList)
+              QuestionOptionElement(
+                key: option != null ? Key(option) : UniqueKey(),
+                option: option,
+                height: avalaibleHeightPerOption,
+              ),
+          ],
+          onReorder: (int oldIndex, int newIndex) {
+            setState(() {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              final String? item = widget.optionList.removeAt(oldIndex);
+              widget.optionList.insert(newIndex, item);
+            });
           },
-          shrinkWrap: true,
-          itemCount: widget.optionList.length,
         ),
       ),
     );
@@ -70,22 +92,44 @@ class _QuestionOptionListState extends State<QuestionOptionList> {
 }
 
 class QuestionOptionElement extends StatelessWidget {
-  const QuestionOptionElement({Key? key, this.option}) : super(key: key);
+  QuestionOptionElement({Key? key, this.option, this.height})
+      : super(key: key) {
+    color = stringToColor(option ?? 'nothing');
+  }
 
   final String? option;
+  final double? height;
+  late final Color color;
+
+  Color stringToColor(String string) {
+    int randomishValue1 = string.hashCode;
+    int randomishValue2 = string.length * 13;
+    int randomishValue3 = string[0].hashCode * 7;
+    return Color.fromARGB(255, (randomishValue1 - randomishValue2 * 4) % 225,
+        (randomishValue1 + randomishValue3 * 15) % 225, randomishValue1 % 225);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 5.0),
+    return SizedBox(
+      height: height,
       child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-              child: Text(
-            this.option ?? '---',
-            style: Theme.of(context).textTheme.headline5,
-          )),
+        child: ListTile(
+          tileColor: color,
+          title: Center(
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5.0)),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  option ?? '---',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
