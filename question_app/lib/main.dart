@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Question App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blue,
+          colorScheme: ColorScheme.light(background: Colors.blueGrey[200]!)),
       home: const QuestionPage(),
     );
   }

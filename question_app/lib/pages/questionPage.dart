@@ -17,6 +17,7 @@ class _QuestionPageState extends State<QuestionPage> {
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(builder: (context, appState, _) {
       return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: Container(
             height: double.infinity,
             width: double.infinity,

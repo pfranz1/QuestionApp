@@ -24,7 +24,7 @@ class QuestionInterface extends StatelessWidget {
                         primary: Theme.of(context).colorScheme.secondary),
                     child: Text(
                       'Submit',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      style: Theme.of(context).textTheme.headline6!.copyWith(
                           color: Theme.of(context).colorScheme.onSecondary),
                     )),
               ),
