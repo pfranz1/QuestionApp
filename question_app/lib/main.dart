@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:question_app/applicationState.dart';
 import 'package:question_app/pages/questionPage.dart';
+import 'pages/pages.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue,
           colorScheme: ColorScheme.light(background: Colors.blueGrey[200]!)),
-      home: const QuestionPage(),
+      home: const SelectPage(),
     );
   }
 }
