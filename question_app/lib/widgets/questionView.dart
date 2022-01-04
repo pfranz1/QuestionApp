@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:question_app/models/question.dart';
 
 class QuestionInterface extends StatelessWidget {
-  QuestionInterface({Key? key, required this.question}) : super(key: key) {
+  QuestionInterface({Key? key, required this.question, required this.onSubmit})
+      : super(key: key) {
     questionOptionsList =
         QuestionOptionList(optionList: question?.options ?? []);
     initalOptionOrdering = List<String?>.from(question?.options ?? []);
@@ -12,6 +13,8 @@ class QuestionInterface extends StatelessWidget {
   late List<String?> initalOptionOrdering;
   late QuestionOptionList questionOptionsList;
 
+  final void Function(String) onSubmit;
+
   void submitRanking() {
     List<String?> ordering = questionOptionsList.optionList;
     String rankings = '';
@@ -19,7 +22,7 @@ class QuestionInterface extends StatelessWidget {
       final int rank = ordering.indexOf(element ?? '') + 1;
       rankings += "$rank,";
     }
-    print(rankings);
+    onSubmit(rankings);
   }
 
   @override

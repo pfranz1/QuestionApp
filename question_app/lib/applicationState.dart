@@ -25,13 +25,29 @@ class ApplicationState extends ChangeNotifier {
         options: List<String>.from(
             snapshot.docs.first.data()['options'] as List<dynamic>),
       );
+
       notifyListeners();
     });
+
+    FirebaseFirestore.instance
+        .collection('questions')
+        .limit(1)
+        .get()
+        .then((value) => _docId = value.docs.first.reference.id);
   }
 
   StreamSubscription<QuerySnapshot>? _questionSubscription;
+  late String _docId;
   Question? _question;
   Question? get question => _question;
+
+  Future<DocumentReference> addResponse(String response) {
+    return FirebaseFirestore.instance
+        .collection('questions')
+        .doc(_docId)
+        .collection('responses')
+        .add(<String, dynamic>{'response': response});
+  }
 
   @override
   void dispose() {

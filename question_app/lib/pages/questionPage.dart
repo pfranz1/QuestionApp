@@ -21,7 +21,8 @@ class _QuestionPageState extends State<QuestionPage> {
         body: Container(
             height: double.infinity,
             width: double.infinity,
-            child: QuestionInterface(question: appState.question)),
+            child: QuestionInterface(
+                question: appState.question, onSubmit: appState.addResponse)),
       );
     });
   }
