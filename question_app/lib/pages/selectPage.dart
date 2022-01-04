@@ -28,8 +28,16 @@ class _SelectPageState extends State<SelectPage> {
           body: Center(
             child: Column(
               children: [
-                const Text(
-                    'You will be able to select and see youre questions'),
+                ...[
+                  for (QuestionSelectInfoContainer myQuestion
+                      in appState.myQuestions ?? [])
+                    if (myQuestion.qId != 'defaultQuestionId')
+                      Card(
+                        child: Text(myQuestion.qText),
+                      )
+                    else
+                      StyledButton(child: Icon(Icons.add), onPressed: () {}),
+                ],
                 Authentication(
                     loginState: appState.loginState,
                     email: appState.email,

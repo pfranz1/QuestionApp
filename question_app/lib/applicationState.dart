@@ -7,6 +7,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:question_app/firebase_options.dart';
 import 'package:question_app/models/models.dart';
 import 'widgets/widgets.dart';
+import 'models/models.dart';
+
+class QuestionSelectInfoContainer {
+  final String qText;
+  final String qId;
+
+  QuestionSelectInfoContainer({required this.qId, required this.qText});
+
+  @override
+  String toString() {
+    return '{$qId,$qText}';
+  }
+}
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
@@ -21,6 +34,22 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loginState = ApplicationLoginState.loggedIn;
+
+        _myQuestionsSubscription = FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('addedQuestions')
+            .snapshots()
+            .listen((snapshot) {
+          _myQuestions = [];
+          for (QueryDocumentSnapshot<Map<String, dynamic>> doc
+              in snapshot.docs) {
+            _myQuestions!.add(QuestionSelectInfoContainer(
+                qId: doc.data()['qId'] as String,
+                qText: doc.data()['qText'] as String));
+          }
+          notifyListeners();
+        });
 
         _questionSubscription = FirebaseFirestore.instance
             .collection('questions')
@@ -43,15 +72,29 @@ class ApplicationState extends ChangeNotifier {
         _loginState = ApplicationLoginState.loggedOut;
         _questionSubscription?.cancel();
         _question = null;
+        _myQuestionsSubscription?.cancel();
+        _myQuestions = null;
       }
       notifyListeners();
     });
   }
 
+  StreamSubscription<QuerySnapshot>? _myQuestionsSubscription;
+  List<QuestionSelectInfoContainer>? _myQuestions;
+  List<QuestionSelectInfoContainer>? get myQuestions => _myQuestions;
+
   StreamSubscription<QuerySnapshot>? _questionSubscription;
   late String _docId;
   Question? _question;
   Question? get question => _question;
+
+  // Future<DocumentReference> makeQuestion(Question question,
+  //     {String? questionID}) {
+  //   //update question inside of myQuestions collection
+  //   //update question inside of questionCollection
+  // }
+
+  // Future<DocumentReference> updateQuestion() {}
 
   //#region Log-on region
   ApplicationLoginState _loginState = ApplicationLoginState.loggedOut;
@@ -113,6 +156,24 @@ class ApplicationState extends ChangeNotifier {
       var credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       await credential.user!.updateDisplayName(displayName);
+
+      final CollectionReference usersRef =
+          FirebaseFirestore.instance.collection('/users');
+      Map<String, dynamic> userData = {
+        'displayName': displayName,
+        'email': credential.user!.email,
+      };
+
+      await usersRef.doc(credential.user!.uid).set(userData);
+      Map<String, dynamic> questionData = {
+        'qId': 'defaultQuestionId',
+        'isOwner': false,
+        'qText': 'defaultQuestion',
+      };
+      await usersRef
+          .doc(credential.user!.uid)
+          .collection('addedQuestions')
+          .add(questionData);
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
     }
