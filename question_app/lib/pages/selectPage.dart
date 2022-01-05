@@ -32,12 +32,14 @@ class _SelectPageState extends State<SelectPage> {
                   for (QuestionSelectInfoContainer myQuestion
                       in appState.myQuestions ?? [])
                     if (myQuestion.qId != 'defaultQuestionId')
-                      Card(
-                        child: Text(myQuestion.qText),
+                      qSelectCard(
+                        qId: myQuestion.qId,
+                        qText: myQuestion.qText,
                       )
-                    else
-                      StyledButton(child: Icon(Icons.add), onPressed: () {}),
+
+                  // Text(myQuestion.qText)
                 ],
+                StyledButton(child: Icon(Icons.add), onPressed: () {}),
                 Authentication(
                     loginState: appState.loginState,
                     email: appState.email,
