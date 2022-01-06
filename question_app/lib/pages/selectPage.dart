@@ -40,11 +40,15 @@ class _SelectPageState extends State<SelectPage> {
                 ...[
                   for (QuestionSelectInfoContainer myQuestion
                       in appState.myQuestions ?? [])
+                    //TODO: Remove handling this old idea
                     if (myQuestion.qId != 'defaultQuestionId')
                       qSelectCard(
                         qId: myQuestion.qId,
                         qText: myQuestion.qText,
-                        onSelect: navigateToQuestion,
+                        onSelect: (qId) {
+                          appState.loadQuestion(qId);
+                          navigateToQuestion(qId);
+                        },
                       )
 
                   // Text(myQuestion.qText)

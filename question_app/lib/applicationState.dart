@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -54,30 +55,12 @@ class ApplicationState extends ChangeNotifier {
           }
           notifyListeners();
         });
-
-        _questionSubscription = FirebaseFirestore.instance
-            .collection('questions')
-            .limit(1)
-            .snapshots()
-            .listen((snapshot) {
-          _question = Question(
-            questionText: snapshot.docs.first.data()['questionText'] as String,
-            options: List<String>.from(
-                snapshot.docs.first.data()['options'] as List<dynamic>),
-          );
-        });
-
-        FirebaseFirestore.instance
-            .collection('questions')
-            .limit(1)
-            .get()
-            .then((value) => _docId = value.docs.first.reference.id);
       } else {
         _loginState = ApplicationLoginState.loggedOut;
-        _questionSubscription?.cancel();
+        _questionLoadState = QuestionLoadState.loading;
         _question = null;
-        _myQuestionsSubscription?.cancel();
         _myQuestions = null;
+        _myQuestionsSubscription?.cancel();
       }
       notifyListeners();
     });
@@ -90,10 +73,10 @@ class ApplicationState extends ChangeNotifier {
   QuestionLoadState? _questionLoadState;
   QuestionLoadState? get questionLoadState => _questionLoadState;
 
-  StreamSubscription<QuerySnapshot>? _questionSubscription;
-  late String _docId;
   Question? _question;
   Question? get question => _question;
+
+  String? _questionId;
 
   // Future<DocumentReference> makeQuestion(Question question,
   //     {String? questionID}) {
@@ -103,11 +86,12 @@ class ApplicationState extends ChangeNotifier {
 
   // Future<DocumentReference> updateQuestion() {}
 
-  //region Question loading region
+  //region Question region
   void loadQuestion(String qId) async {
-    _questionSubscription?.cancel();
     _question = null;
+    _questionId = qId;
     _questionLoadState = QuestionLoadState.loading;
+    notifyListeners();
 
     final ref = FirebaseFirestore.instance.collection('questions').doc(qId);
     try {
@@ -117,14 +101,31 @@ class ApplicationState extends ChangeNotifier {
         options:
             List<String>.from(snapshot.data()!['options'] as List<dynamic>),
       );
+      // if (Random.secure().nextInt(100) > 50) throw ('Random eroror lol');
       _questionLoadState = QuestionLoadState.done;
     } catch (e) {
-      //TODO: Firgure if this is being funky with bang opperators
       print(e);
+      _question = null;
       _questionLoadState = QuestionLoadState.error;
     } finally {
       notifyListeners();
     }
+  }
+
+  void reload() {
+    if (_questionLoadState == QuestionLoadState.error) {
+      loadQuestion(_questionId!);
+    } else {
+      throw ('Reload was called while not in error state');
+    }
+  }
+
+  Future<DocumentReference> addResponse(String response) {
+    return FirebaseFirestore.instance
+        .collection('questions')
+        .doc(_questionId)
+        .collection('responses')
+        .add(<String, dynamic>{'response': response});
   }
 
   //endregion
@@ -217,17 +218,8 @@ class ApplicationState extends ChangeNotifier {
   }
   //#endregion
 
-  Future<DocumentReference> addResponse(String response) {
-    return FirebaseFirestore.instance
-        .collection('questions')
-        .doc(_docId)
-        .collection('responses')
-        .add(<String, dynamic>{'response': response});
-  }
-
   @override
   void dispose() {
-    _questionSubscription?.cancel();
     super.dispose();
   }
 }
