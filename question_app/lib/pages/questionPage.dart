@@ -24,11 +24,12 @@ class _QuestionPageState extends State<QuestionPage> {
             width: double.infinity,
             child: Column(
               children: [
-                if (!isError)
+                if (!isError && !appState.hasVoted)
                   QuestionInterface(
                     question: appState.question,
                     onSubmit: appState.addResponse,
                   ),
+                if (!isError && appState.hasVoted) ResultsCard(),
                 if (isError) const Center(child: ErrorCard()),
                 if (isError)
                   StyledButton(

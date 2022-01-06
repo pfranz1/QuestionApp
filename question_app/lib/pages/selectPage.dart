@@ -46,7 +46,7 @@ class _SelectPageState extends State<SelectPage> {
                         qId: myQuestion.qId,
                         qText: myQuestion.qText,
                         onSelect: (qId) {
-                          appState.loadQuestion(qId);
+                          appState.loadQuestion(qId, myQuestion.hasVoted);
                           navigateToQuestion(qId);
                         },
                       )

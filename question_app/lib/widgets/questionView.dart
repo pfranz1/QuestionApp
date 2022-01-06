@@ -18,9 +18,11 @@ class QuestionInterface extends StatelessWidget {
   void submitRanking() {
     List<String?> ordering = questionOptionsList.optionList;
     String rankings = '';
-    for (String? element in initalOptionOrdering) {
-      final int rank = ordering.indexOf(element ?? '') + 1;
-      rankings += "$rank,";
+    for (String? element in ordering) {
+      if (element == null) break;
+
+      final int elementId = initalOptionOrdering.indexOf(element);
+      rankings += "$elementId,";
     }
     onSubmit(rankings);
   }

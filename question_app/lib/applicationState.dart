@@ -13,8 +13,10 @@ import 'models/models.dart';
 class QuestionSelectInfoContainer {
   final String qText;
   final String qId;
+  final bool hasVoted;
 
-  QuestionSelectInfoContainer({required this.qId, required this.qText});
+  QuestionSelectInfoContainer(
+      {required this.qId, required this.qText, required this.hasVoted});
 
   @override
   String toString() {
@@ -51,7 +53,8 @@ class ApplicationState extends ChangeNotifier {
               in snapshot.docs) {
             _myQuestions!.add(QuestionSelectInfoContainer(
                 qId: doc.data()['qId'] as String,
-                qText: doc.data()['qText'] as String));
+                qText: doc.data()['qText'] as String,
+                hasVoted: doc.data()['hasVoted'] as bool));
           }
           notifyListeners();
         });
@@ -76,6 +79,9 @@ class ApplicationState extends ChangeNotifier {
   Question? _question;
   Question? get question => _question;
 
+  bool _hasVoted = false;
+  bool get hasVoted => _hasVoted;
+
   String? _questionId;
 
   // Future<DocumentReference> makeQuestion(Question question,
@@ -87,22 +93,24 @@ class ApplicationState extends ChangeNotifier {
   // Future<DocumentReference> updateQuestion() {}
 
   //region Question region
-  void loadQuestion(String qId) async {
+  void loadQuestion(String qId, bool hasVoted) async {
     _question = null;
     _questionId = qId;
+    _hasVoted = hasVoted;
     _questionLoadState = QuestionLoadState.loading;
     notifyListeners();
 
     final ref = FirebaseFirestore.instance.collection('questions').doc(qId);
     try {
       final snapshot = await ref.get();
-      print(snapshot.data());
+      // print(snapshot.data());
       _question = Question(
         questionText: snapshot.data()!['questionText'] as String,
         options:
             List<String>.from(snapshot.data()!['options'] as List<dynamic>),
       );
       // if (Random.secure().nextInt(100) > 50) throw ('Random eroror lol');
+
       _questionLoadState = QuestionLoadState.done;
     } catch (e) {
       print(e);
@@ -115,13 +123,23 @@ class ApplicationState extends ChangeNotifier {
 
   void reload() {
     if (_questionLoadState == QuestionLoadState.error) {
-      loadQuestion(_questionId!);
+      loadQuestion(_questionId!, _hasVoted);
     } else {
       throw ('Reload was called while not in error state');
     }
   }
 
-  Future<void> addResponse(String response) {
+  Future<void> addResponse(String response) async {
+    _hasVoted = true;
+
+    Map<String, dynamic> data = {'hasVoted': true};
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('addedQuestions')
+        .doc(_questionId)
+        .update(data);
+
     return FirebaseFirestore.instance
         .collection('questions')
         .doc(_questionId)
