@@ -96,6 +96,7 @@ class ApplicationState extends ChangeNotifier {
     final ref = FirebaseFirestore.instance.collection('questions').doc(qId);
     try {
       final snapshot = await ref.get();
+      print(snapshot.data());
       _question = Question(
         questionText: snapshot.data()!['questionText'] as String,
         options:
@@ -120,12 +121,13 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
-  Future<DocumentReference> addResponse(String response) {
+  Future<void> addResponse(String response) {
     return FirebaseFirestore.instance
         .collection('questions')
         .doc(_questionId)
         .collection('responses')
-        .add(<String, dynamic>{'response': response});
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set(<String, dynamic>{'response': response});
   }
 
   //endregion

@@ -32,7 +32,7 @@ class _QuestionPageState extends State<QuestionPage> {
                 if (isError) const Center(child: ErrorCard()),
                 if (isError)
                   StyledButton(
-                      child: Text('Reload'), onPressed: appState.reload)
+                      child: const Text('Reload'), onPressed: appState.reload)
               ],
             )),
       );
