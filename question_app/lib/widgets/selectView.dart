@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
 class qSelectCard extends StatelessWidget {
-  qSelectCard({Key? key, required this.qId, required this.qText})
+  qSelectCard(
+      {Key? key,
+      required this.qId,
+      required this.qText,
+      required this.onSelect})
       : super(key: key);
 
   final String qId;
   final String qText;
+  final void Function(String qId) onSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +24,7 @@ class qSelectCard extends StatelessWidget {
         child: InkWell(
           focusColor: Colors.black,
           onTap: () {
-            print("transition to question");
+            onSelect(qId);
           },
           child: Container(
             decoration: BoxDecoration(

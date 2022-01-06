@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:question_app/applicationState.dart';
+import 'package:question_app/pages/pages.dart';
 import 'package:question_app/widgets/widgets.dart';
 
 class SelectPage extends StatefulWidget {
@@ -11,6 +12,14 @@ class SelectPage extends StatefulWidget {
 }
 
 class _SelectPageState extends State<SelectPage> {
+  void navigateToQuestion(String qId) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => const QuestionPage(),
+            settings: RouteSettings(name: '/$qId')));
+  }
+
   @override
   Widget build(BuildContext context) {
     // Authentication(
@@ -35,6 +44,7 @@ class _SelectPageState extends State<SelectPage> {
                       qSelectCard(
                         qId: myQuestion.qId,
                         qText: myQuestion.qText,
+                        onSelect: navigateToQuestion,
                       )
 
                   // Text(myQuestion.qText)
