@@ -18,7 +18,7 @@ class _QuestionPageState extends State<QuestionPage> {
     return Consumer<ApplicationState>(builder: (context, appState, _) {
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
-        body: Container(
+        body: SizedBox(
             height: double.infinity,
             width: double.infinity,
             child: QuestionInterface(

@@ -21,6 +21,8 @@ class QuestionSelectInfoContainer {
   }
 }
 
+enum QuestionLoadState { loading, done, error }
+
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
     init();
@@ -30,6 +32,8 @@ class ApplicationState extends ChangeNotifier {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    _questionLoadState = QuestionLoadState.loading;
 
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
@@ -83,6 +87,9 @@ class ApplicationState extends ChangeNotifier {
   List<QuestionSelectInfoContainer>? _myQuestions;
   List<QuestionSelectInfoContainer>? get myQuestions => _myQuestions;
 
+  QuestionLoadState? _questionLoadState;
+  QuestionLoadState? get questionLoadState => _questionLoadState;
+
   StreamSubscription<QuerySnapshot>? _questionSubscription;
   late String _docId;
   Question? _question;
@@ -95,6 +102,32 @@ class ApplicationState extends ChangeNotifier {
   // }
 
   // Future<DocumentReference> updateQuestion() {}
+
+  //region Question loading region
+  void loadQuestion(String qId) async {
+    _questionSubscription?.cancel();
+    _question = null;
+    _questionLoadState = QuestionLoadState.loading;
+
+    final ref = FirebaseFirestore.instance.collection('questions').doc(qId);
+    try {
+      final snapshot = await ref.get();
+      _question = Question(
+        questionText: snapshot.data()!['questionText'] as String,
+        options:
+            List<String>.from(snapshot.data()!['options'] as List<dynamic>),
+      );
+      _questionLoadState = QuestionLoadState.done;
+    } catch (e) {
+      //TODO: Firgure if this is being funky with bang opperators
+      print(e);
+      _questionLoadState = QuestionLoadState.error;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  //endregion
 
   //#region Log-on region
   ApplicationLoginState _loginState = ApplicationLoginState.loggedOut;
