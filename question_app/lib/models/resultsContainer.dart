@@ -18,7 +18,7 @@ class ResultsContainer {
 
     int voterCount = results.length;
     bool hasWinner = false;
-    int rounds = 0;
+    int currentRound = 0;
     List<ElementVoteCollector> voteCollectors = [
       for (MapEntry<int, String> entry in options.asMap().entries)
         ElementVoteCollector((int votes) => voterCount / 2 < votes, entry.key)
@@ -43,19 +43,24 @@ class ResultsContainer {
         for (ElementVoteCollector vc in voteCollectors) vc.makeSnapshot()
       ]));
 
-      //Now I do some post work like removing the lowest vote person
+      //Now I do some post work like removing the lowest first-pref vote person
       voteCollectors.sort();
-      //Starting at the back find the first one with a value that isnt -1 (a sentinal value)
-      final vcToRemove =
-          voteCollectors.reversed.firstWhere((element) => element.votes >= 0);
+      //I find the first one where it hasnt yet been removed
+      final vcToRemove = voteCollectors
+          .firstWhere((element) => element.isRemovedFromRunning == false);
 
       vcToRemove.markRemoved();
       isElementRemoved[vcToRemove.id] = true;
+      //Itterate through the vote collectors and let them know  a new round is starting
+      currentRound++;
+      for (final vc in voteCollectors) {
+        vc.incrementSupportRound(currentRound);
+      }
     }
     //After itterating until i had a winner in the final frame I land here
     frames = tabulationFrames;
     voteCollectors.sort();
-    winner = options[voteCollectors.first.id];
+    winner = options[voteCollectors.last.id];
     resolutionComputed = true;
     return true;
   }
@@ -72,20 +77,28 @@ class TabulationFrame {
 class ElementVCSnapshot {
   final int votes;
   final List<int> voteBreakdown;
+  final bool isRemoved;
 
-  ElementVCSnapshot({required this.votes, required this.voteBreakdown});
+  ElementVCSnapshot(
+      {required this.votes,
+      required this.voteBreakdown,
+      required this.isRemoved});
 }
 
 class ElementVoteCollector implements Comparable<ElementVoteCollector> {
   int votes = 0;
+
   final int id;
+
   List<int> voteBreakdown = [0];
   int supportRound = 0;
+
   bool Function(int) isWinner;
+  bool isRemovedFromRunning = false;
 
   ElementVoteCollector(this.isWinner, this.id);
 
-  //Adds a vote to its running tally, - returns true if it has won according to a delega
+  //Adds a vote to its running tally, - returns true if it has won according to a delegate
   bool addVotes(int addedVotes) {
     votes = votes + addedVotes;
     voteBreakdown[supportRound] = voteBreakdown[supportRound] + addedVotes;
@@ -93,20 +106,37 @@ class ElementVoteCollector implements Comparable<ElementVoteCollector> {
   }
 
   void markRemoved() {
-    votes = -1;
-    voteBreakdown[supportRound + 1] = -1;
+    isRemovedFromRunning = true;
   }
 
   void incrementSupportRound(int newRound) {
     supportRound = newRound;
+    voteBreakdown.add(0);
   }
 
   ElementVCSnapshot makeSnapshot() {
-    return ElementVCSnapshot(votes: votes, voteBreakdown: voteBreakdown);
+    return ElementVCSnapshot(
+        votes: votes,
+        voteBreakdown: voteBreakdown,
+        isRemoved: isRemovedFromRunning);
   }
 
   @override
   int compareTo(ElementVoteCollector other) {
-    return votes - other.votes;
+    //Okay so this is so vauge but as far as I can find its the first pref counts only that count
+    if (isRemovedFromRunning) {
+      if (other.isRemovedFromRunning) {
+        return voteBreakdown[0] - other.voteBreakdown[0];
+      } else {
+        //just some large negative number so that if self.isRemoved it will be beneith
+        return -100;
+      }
+    } else {
+      if (other.isRemovedFromRunning) {
+        return 100;
+      } else {
+        return voteBreakdown[0] - other.voteBreakdown[0];
+      }
+    }
   }
 }

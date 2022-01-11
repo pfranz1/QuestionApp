@@ -14,6 +14,11 @@ class QuestionPage extends StatefulWidget {
 
 class _QuestionPageState extends State<QuestionPage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(builder: (context, appState, _) {
       final isError = appState.questionLoadState == QuestionLoadState.error;
@@ -24,12 +29,20 @@ class _QuestionPageState extends State<QuestionPage> {
             width: double.infinity,
             child: Column(
               children: [
+                if (appState.questionLoadState == QuestionLoadState.loading)
+                  CircularProgressIndicator(),
                 if (!isError && !appState.hasVoted)
                   QuestionInterface(
                     question: appState.question,
                     onSubmit: appState.addResponse,
                   ),
-                if (!isError && appState.hasVoted) ResultsCard(),
+                if (!isError &&
+                    appState.hasVoted &&
+                    appState.resultLoadState == ResultLoadState.done)
+                  ResultsCard(
+                    results: appState.results!,
+                    options: appState.question!.options,
+                  ),
                 if (isError) const Center(child: ErrorCard()),
                 if (isError)
                   StyledButton(

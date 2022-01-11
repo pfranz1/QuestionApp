@@ -25,6 +25,7 @@ class QuestionSelectInfoContainer {
 }
 
 enum QuestionLoadState { loading, done, error }
+enum ResultLoadState { loading, done, error }
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
@@ -79,6 +80,12 @@ class ApplicationState extends ChangeNotifier {
   Question? _question;
   Question? get question => _question;
 
+  List<String>? _results;
+  List<String>? get results => _results;
+
+  ResultLoadState? _resultLoadState;
+  ResultLoadState? get resultLoadState => _resultLoadState;
+
   bool _hasVoted = false;
   bool get hasVoted => _hasVoted;
 
@@ -97,6 +104,8 @@ class ApplicationState extends ChangeNotifier {
     _question = null;
     _questionId = qId;
     _hasVoted = hasVoted;
+    //If the person has voted i need to load the results along with the question
+    getResponses();
     _questionLoadState = QuestionLoadState.loading;
     notifyListeners();
 
@@ -129,16 +138,45 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
+  Future<void> getResponses() async {
+    _resultLoadState = ResultLoadState.loading;
+    _results = null;
+
+    try {
+      final responses = FirebaseFirestore.instance
+          .collection('questions')
+          .doc(_questionId)
+          .collection('responses')
+          .get();
+      return responses.then((value) {
+        final List<String> output = [];
+        for (final element in value.docs) {
+          output.add(element.data()['response']);
+        }
+        _results = output;
+        _resultLoadState = ResultLoadState.done;
+      });
+    } catch (e) {
+      print(e);
+      _resultLoadState = ResultLoadState.error;
+      _results = null;
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<void> addResponse(String response) async {
     _hasVoted = true;
 
-    Map<String, dynamic> data = {'hasVoted': true};
+    Map<String, dynamic> hasVotedData = {'hasVoted': true};
     FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('addedQuestions')
         .doc(_questionId)
-        .update(data);
+        .update(hasVotedData);
+
+    Future.delayed(Duration(seconds: 1)).then((value) => getResponses());
 
     return FirebaseFirestore.instance
         .collection('questions')
