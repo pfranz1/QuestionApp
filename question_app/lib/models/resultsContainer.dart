@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
@@ -12,7 +13,50 @@ class ResultsContainer {
 
   ResultsContainer(this.results, this.options);
 
+  List<int> getVotesAtDepth(int depth, List<bool> isElementRemoved) {
+    // int acumulatedVotes = 0;
+
+    List<int> acumulatedVotes = List<int>.filled(options.length, 0);
+
+    for (String result in results) {
+      int depthTracker = depth;
+      int entryWalker = -1;
+      do {
+        entryWalker++;
+        int voteWinner =
+            int.parse(result.substring(2 * entryWalker).split(',').first);
+        //If i have found a valid winner that hasnt been removed
+        if (!isElementRemoved[voteWinner]) {
+          depthTracker--;
+          if (depthTracker < 0) {
+            acumulatedVotes[voteWinner]++;
+          }
+        }
+      } while (depthTracker >= 0);
+    }
+
+    return acumulatedVotes;
+  }
+
+  List<int> getPreferenceAtDepth(int depth) {
+    List<int> acumulatedVotes = List<int>.filled(options.length, 0);
+
+    for (String result in results) {
+      acumulatedVotes[
+          int.parse(result.substring(2 * depth).split(',').first)]++;
+    }
+
+    return acumulatedVotes;
+  }
+
+  /**
+   * I know that i may post this code online and this mess with be seen.
+   * I could clean this up and remove old ideas and streamline it
+   * Im not going to spend that time now becasue i am sick of working on this problem
+   * if its a problem later i will fix it later. Would rather have soemthing ugly but done
+   */
   Future<bool> computeResults() async {
+    print('compute result called');
     List<bool> isElementRemoved = List<bool>.filled(options.length, false);
     List<TabulationFrame> tabulationFrames = [];
 
@@ -27,30 +71,74 @@ class ResultsContainer {
     //If there isnt anything in tabulation frames OR the last frame still has no winner
     while (
         tabulationFrames.isEmpty || tabulationFrames.last.hasWinner != true) {
-      for (MapEntry<int, String> result in results.asMap().entries) {
-        //Results are stored like '1,2,4,3' which means I like 1 the most, 2 the second most ect.
-        //Figure who wins this persons vote, if they are invalid remove them from the pool and try again
-        int voteWinner = int.parse(result.value.split(',').first);
-        while (isElementRemoved[voteWinner]) {
-          results[result.key] = result.value.replaceFirst('$voteWinner,', '');
-          voteWinner = int.parse(result.value.split(',').first);
-        }
-        hasWinner = hasWinner || voteCollectors[voteWinner].addVotes(1);
+      final firstChoiceVotes = getVotesAtDepth(0, isElementRemoved);
+      for (final votes in firstChoiceVotes.asMap().entries) {
+        hasWinner =
+            hasWinner || voteCollectors[votes.key].addVotes(votes.value);
       }
+
       //At this point i have tallied all of the votes and ensured that only active elements recived votes
       //Now im going to make a tabulation frame
       tabulationFrames.add(TabulationFrame(hasWinner: hasWinner, snapshots: [
         for (ElementVoteCollector vc in voteCollectors) vc.makeSnapshot()
       ]));
 
-      //Now I do some post work like removing the lowest first-pref vote person
-      voteCollectors.sort();
-      //I find the first one where it hasnt yet been removed
-      final vcToRemove = voteCollectors
-          .firstWhere((element) => element.isRemovedFromRunning == false);
+      if (hasWinner) break;
 
-      vcToRemove.markRemoved();
-      isElementRemoved[vcToRemove.id] = true;
+      //Now I do some post work like removing the lowest first-pref vote person
+
+      // List<ElementVoteCollector> lowestFirstVotes = [
+      //   voteCollectors
+      //       .firstWhere((element) => element.isRemovedFromRunning == false)
+      // ];
+      // //I find the first one where it hasnt yet been removed
+      // for (final vc in voteCollectors) {
+      //   if (!vc.isRemovedFromRunning && vc.id != lowestFirstVotes[0].id) {
+      //     if (vc.voteBreakdown[0] == lowestFirstVotes[0].voteBreakdown[0]) {
+      //       //This means that some vc is tying for the lowest first choice votes
+      //     }
+      //   }
+      // }
+
+      int? lowestVote;
+      for (final vc in voteCollectors) {
+        if (!vc.isRemovedFromRunning) {
+          lowestVote = min(vc.votes, lowestVote ?? vc.votes + 1);
+        }
+      }
+
+      //Find vc to remove
+      List<ElementVoteCollector> vcsToRemove = voteCollectors
+          .where((element) => element.votes == lowestVote)
+          .toList();
+      //If i have multiple to remove i need to do some tiebreaking
+      int n = 0;
+      while (vcsToRemove.length > 1) {
+        n++;
+        //The votes that they start with are first pref votes, i want to check second pref and on and on
+        final nthPlaceVotes = getPreferenceAtDepth(n);
+        //Now i want to compare these
+        //Find the lowest value
+        int lowestNthPlaceVotes = nthPlaceVotes[vcsToRemove.first.id];
+        List<ElementVoteCollector> newLowest = [];
+        for (final vc in vcsToRemove) {
+          if (nthPlaceVotes[vc.id] == lowestNthPlaceVotes) {
+            newLowest.add(vc);
+          } else if (nthPlaceVotes[vc.id] < lowestNthPlaceVotes) {
+            lowestNthPlaceVotes = nthPlaceVotes[vc.id];
+            newLowest = [vc];
+          }
+        }
+        vcsToRemove = newLowest;
+      }
+
+      // voteCollectors
+      //     .firstWhere((element) => element.isRemovedFromRunning == false);
+
+      //Need to handle the case where the last one is tied with another and do a tiebreak among all the lowest ones
+
+      vcsToRemove.first.markRemoved();
+      isElementRemoved[vcsToRemove.first.id] = true;
       //Itterate through the vote collectors and let them know  a new round is starting
       currentRound++;
       for (final vc in voteCollectors) {
@@ -61,6 +149,7 @@ class ResultsContainer {
     frames = tabulationFrames;
     voteCollectors.sort();
     winner = options[voteCollectors.last.id];
+    //1,0,2, 0,1,2,
     resolutionComputed = true;
     return true;
   }
@@ -78,9 +167,11 @@ class ElementVCSnapshot {
   final int votes;
   final List<int> voteBreakdown;
   final bool isRemoved;
+  final int id;
 
   ElementVCSnapshot(
-      {required this.votes,
+      {required this.id,
+      required this.votes,
       required this.voteBreakdown,
       required this.isRemoved});
 }
@@ -111,11 +202,13 @@ class ElementVoteCollector implements Comparable<ElementVoteCollector> {
 
   void incrementSupportRound(int newRound) {
     supportRound = newRound;
+    votes = 0;
     voteBreakdown.add(0);
   }
 
   ElementVCSnapshot makeSnapshot() {
     return ElementVCSnapshot(
+        id: id,
         votes: votes,
         voteBreakdown: voteBreakdown,
         isRemoved: isRemovedFromRunning);
@@ -123,7 +216,7 @@ class ElementVoteCollector implements Comparable<ElementVoteCollector> {
 
   @override
   int compareTo(ElementVoteCollector other) {
-    //Okay so this is so vauge but as far as I can find its the first pref counts only that count
+    //Okay so this is so vauge but as far as I can find its the first pref counts only that count when comparing to remove one
     if (isRemovedFromRunning) {
       if (other.isRemovedFromRunning) {
         return voteBreakdown[0] - other.voteBreakdown[0];

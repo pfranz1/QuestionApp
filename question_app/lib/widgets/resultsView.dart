@@ -18,8 +18,12 @@ class _ResultsCardState extends State<ResultsCard> {
   @override
   void initState() {
     resultsContainer = ResultsContainer(widget.results, widget.options);
+    _computeResults().then((value) => setState(() {}));
     super.initState();
-    resultsContainer.computeResults().then((value) => setState(() {}));
+  }
+
+  Future _computeResults() async {
+    resultsContainer.computeResults();
   }
 
   @override
