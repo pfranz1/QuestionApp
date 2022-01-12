@@ -21,8 +21,8 @@ class QuestionPage extends StatefulWidget {
 class _QuestionPageState extends State<QuestionPage> {
   @override
   void initState() {
-    widget.appState.loadQuestion(widget.qId, widget.hasVoted);
     super.initState();
+    widget.appState.loadQuestion(widget.qId, widget.hasVoted);
   }
 
   @override
@@ -44,6 +44,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     onSubmit: appState.addResponse,
                   ),
                 if (!isError &&
+                    appState.question != null &&
                     appState.hasVoted &&
                     appState.resultLoadState == ResultLoadState.done)
                   ResultsCard(

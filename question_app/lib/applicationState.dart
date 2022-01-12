@@ -114,7 +114,7 @@ class ApplicationState extends ChangeNotifier {
       getResponses();
     }
     _questionLoadState = QuestionLoadState.loading;
-    notifyListeners();
+    // notifyListeners();
 
     final ref = FirebaseFirestore.instance.collection('questions').doc(qId);
     try {
@@ -179,22 +179,28 @@ class ApplicationState extends ChangeNotifier {
       _resultLoadState = ResultLoadState.error;
       _results = null;
     } finally {
-      notifyListeners();
+      Future.delayed(Duration(seconds: 1)).then((value) => notifyListeners());
     }
   }
 
   Future<void> addResponse(String response) async {
     _hasVoted = true;
+    //I want to add this new question to my added questions
 
-    Map<String, dynamic> hasVotedData = {'hasVoted': true};
+    Map<String, dynamic> hasVotedData = {
+      'hasVoted': true,
+      'isOwner': false,
+      'qId': _questionId,
+      'qText': _question!.questionText
+    };
     FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('addedQuestions')
         .doc(_questionId)
-        .update(hasVotedData);
+        .set(hasVotedData);
 
-    Future.delayed(Duration(seconds: 1)).then((value) => getResponses());
+    getResponses();
 
     return FirebaseFirestore.instance
         .collection('questions')
