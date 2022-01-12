@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:question_app/models/models.dart';
 
@@ -18,18 +19,19 @@ class _ResultsCardState extends State<ResultsCard> {
   @override
   void initState() {
     resultsContainer = ResultsContainer(widget.results, widget.options);
-    _computeResults().then((value) => setState(() {}));
+    resultsContainer.addListener(() => setState(() {}));
+    _computeResults();
     super.initState();
   }
 
   Future _computeResults() async {
-    resultsContainer.computeResults();
+    await resultsContainer.tryComputeResults();
   }
 
   @override
   Widget build(BuildContext context) {
     final double avalaibleHeight = MediaQuery.of(context).size.height * 0.45;
-    if (resultsContainer.resolutionComputed) {
+    if (resultsContainer.resolutionComputed == ComputationState.done) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Container(
@@ -43,7 +45,8 @@ class _ResultsCardState extends State<ResultsCard> {
                   '${resultsContainer.winner} wins!\n ${resultsContainer.results}')),
         ),
       );
-    } else {
+    } else if (resultsContainer.resolutionComputed ==
+        ComputationState.loading) {
       return Container(
         height: avalaibleHeight,
         decoration: BoxDecoration(
@@ -51,6 +54,15 @@ class _ResultsCardState extends State<ResultsCard> {
           color: Theme.of(context).colorScheme.surface,
         ),
         child: const Center(child: CircularProgressIndicator()),
+      );
+    } else {
+      return Container(
+        height: avalaibleHeight,
+        decoration: BoxDecoration(
+          border: Border.all(width: 2.0),
+          color: Theme.of(context).colorScheme.surface,
+        ),
+        child: const Center(child: Text('Error :(')),
       );
     }
   }

@@ -3,11 +3,13 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
-class ResultsContainer {
+enum ComputationState { loading, done, error }
+
+class ResultsContainer extends ChangeNotifier {
   List<String> results;
   List<String> options;
 
-  bool resolutionComputed = false;
+  ComputationState resolutionComputed = ComputationState.loading;
   late final List<TabulationFrame> frames;
   late final String winner;
 
@@ -42,11 +44,26 @@ class ResultsContainer {
     List<int> acumulatedVotes = List<int>.filled(options.length, 0);
 
     for (String result in results) {
-      acumulatedVotes[
-          int.parse(result.substring(2 * depth).split(',').first)]++;
+      if (result.length / 2 > depth) {
+        acumulatedVotes[
+            int.parse(result.substring(2 * depth).split(',').first)]++;
+      }
     }
 
     return acumulatedVotes;
+  }
+
+  Future<bool> tryComputeResults() async {
+    try {
+      await computeResults();
+      resolutionComputed = ComputationState.done;
+    } catch (e) {
+      resolutionComputed = ComputationState.error;
+      print(e.toString());
+    } finally {
+      notifyListeners();
+      return true;
+    }
   }
 
   /**
@@ -57,6 +74,8 @@ class ResultsContainer {
    */
   Future<bool> computeResults() async {
     print('compute result called');
+    resolutionComputed = ComputationState.loading;
+    notifyListeners();
     List<bool> isElementRemoved = List<bool>.filled(options.length, false);
     List<TabulationFrame> tabulationFrames = [];
 
@@ -113,7 +132,7 @@ class ResultsContainer {
           .toList();
       //If i have multiple to remove i need to do some tiebreaking
       int n = 0;
-      while (vcsToRemove.length > 1) {
+      while (vcsToRemove.length > 1 && n + 1 < options.length) {
         n++;
         //The votes that they start with are first pref votes, i want to check second pref and on and on
         final nthPlaceVotes = getPreferenceAtDepth(n);
@@ -136,7 +155,7 @@ class ResultsContainer {
       //     .firstWhere((element) => element.isRemovedFromRunning == false);
 
       //Need to handle the case where the last one is tied with another and do a tiebreak among all the lowest ones
-
+      //There is some  case where it is just arbitarly decided to remove the first
       vcsToRemove.first.markRemoved();
       isElementRemoved[vcsToRemove.first.id] = true;
       //Itterate through the vote collectors and let them know  a new round is starting
@@ -150,7 +169,8 @@ class ResultsContainer {
     voteCollectors.sort();
     winner = options[voteCollectors.last.id];
     //1,0,2, 0,1,2,
-    resolutionComputed = true;
+    resolutionComputed = ComputationState.done;
+    notifyListeners();
     return true;
   }
 }
