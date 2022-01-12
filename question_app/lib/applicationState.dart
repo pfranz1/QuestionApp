@@ -100,12 +100,19 @@ class ApplicationState extends ChangeNotifier {
   // Future<DocumentReference> updateQuestion() {}
 
   //region Question region
-  void loadQuestion(String qId, bool hasVoted) async {
+  void loadQuestion(String qId, bool? hasVoted) async {
     _question = null;
     _questionId = qId;
-    _hasVoted = hasVoted;
     //If the person has voted i need to load the results along with the question
-    getResponses();
+    if (hasVoted == null) {
+      _hasVoted = await checkIfResponded();
+    } else {
+      _hasVoted = hasVoted;
+    }
+
+    if (_hasVoted) {
+      getResponses();
+    }
     _questionLoadState = QuestionLoadState.loading;
     notifyListeners();
 
@@ -136,6 +143,17 @@ class ApplicationState extends ChangeNotifier {
     } else {
       throw ('Reload was called while not in error state');
     }
+  }
+
+  Future<bool> checkIfResponded() async {
+    final docIdRef = FirebaseFirestore.instance
+        .collection("questions")
+        .doc(_questionId)
+        .collection('responses')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    return docIdRef.then((value) => value.exists);
   }
 
   Future<void> getResponses() async {

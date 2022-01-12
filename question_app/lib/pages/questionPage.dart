@@ -6,7 +6,13 @@ import '../widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class QuestionPage extends StatefulWidget {
-  const QuestionPage({Key? key}) : super(key: key);
+  const QuestionPage(
+      {Key? key, required this.appState, required this.qId, this.hasVoted})
+      : super(key: key);
+
+  final ApplicationState appState;
+  final String qId;
+  final bool? hasVoted;
 
   @override
   State<QuestionPage> createState() => _QuestionPageState();
@@ -15,6 +21,7 @@ class QuestionPage extends StatefulWidget {
 class _QuestionPageState extends State<QuestionPage> {
   @override
   void initState() {
+    widget.appState.loadQuestion(widget.qId, widget.hasVoted);
     super.initState();
   }
 

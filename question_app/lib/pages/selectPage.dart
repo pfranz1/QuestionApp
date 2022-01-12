@@ -12,11 +12,17 @@ class SelectPage extends StatefulWidget {
 }
 
 class _SelectPageState extends State<SelectPage> {
-  void navigateToQuestion(String qId) {
+  void navigateToQuestion(
+      String qId, bool? hasVoted, ApplicationState appState) {
+    // Navigator.pushNamed(context, '/$qId');
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => const QuestionPage(),
+            builder: (BuildContext context) => QuestionPage(
+                  appState: appState,
+                  qId: qId,
+                  hasVoted: hasVoted,
+                ),
             settings: RouteSettings(name: '/$qId')));
   }
 
@@ -45,9 +51,9 @@ class _SelectPageState extends State<SelectPage> {
                       qSelectCard(
                         qId: myQuestion.qId,
                         qText: myQuestion.qText,
-                        onSelect: (qId) {
-                          appState.loadQuestion(qId, myQuestion.hasVoted);
-                          navigateToQuestion(qId);
+                        onSelect: () {
+                          navigateToQuestion(
+                              myQuestion.qId, myQuestion.hasVoted, appState);
                         },
                       )
 

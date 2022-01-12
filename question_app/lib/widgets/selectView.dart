@@ -10,7 +10,7 @@ class qSelectCard extends StatelessWidget {
 
   final String qId;
   final String qText;
-  final void Function(String qId) onSelect;
+  final void Function() onSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class qSelectCard extends StatelessWidget {
         child: InkWell(
           focusColor: Colors.black,
           onTap: () {
-            onSelect(qId);
+            onSelect();
           },
           child: Container(
             decoration: BoxDecoration(
