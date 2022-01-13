@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:question_app/services/services.dart';
 
 class qSelectCard extends StatelessWidget {
   qSelectCard(
@@ -20,7 +21,7 @@ class qSelectCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Material(
-        color: Colors.white.withOpacity(1.0),
+        color: ColorHasher.getColor(qText).withOpacity(1.0),
         borderRadius: BorderRadius.circular(6.0),
         child: InkWell(
           focusColor: Colors.black,
@@ -33,12 +34,16 @@ class qSelectCard extends StatelessWidget {
                 // This is a bug i might see again, with ink well the lower things shouldnt have color as that will occude the inkwell
                 // color: Theme.of(context).colorScheme.surface,
                 border: Border.all(width: 2.0)),
-            child: Text(
-              qText,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline2!
-                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                qText,
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
+              ),
             ),
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:question_app/models/question.dart';
+import 'package:question_app/services/services.dart';
 
 class QuestionInterface extends StatelessWidget {
   QuestionInterface({Key? key, required this.question, required this.onSubmit})
@@ -149,7 +150,7 @@ class _QuestionOptionListState extends State<QuestionOptionList> {
 class QuestionOptionElement extends StatelessWidget {
   QuestionOptionElement({Key? key, this.option, this.height})
       : super(key: key) {
-    color = stringToColor(option ?? 'nothing');
+    color = ColorHasher.getColor(option ?? 'nothing');
   }
 
   final String? option;
