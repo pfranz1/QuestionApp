@@ -38,6 +38,7 @@ class ApplicationState extends ChangeNotifier {
     );
 
     _questionLoadState = QuestionLoadState.loading;
+    _resultLoadState = ResultLoadState.loading;
 
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
@@ -103,6 +104,10 @@ class ApplicationState extends ChangeNotifier {
   void loadQuestion(String qId, bool? hasVoted) async {
     _question = null;
     _questionId = qId;
+    _questionLoadState = QuestionLoadState.loading;
+    _resultLoadState = ResultLoadState.loading;
+    _results = null;
+
     //If the person has voted i need to load the results along with the question
     if (hasVoted == null) {
       _hasVoted = await checkIfResponded();

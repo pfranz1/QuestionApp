@@ -20,6 +20,26 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
         if (appState.loginState == ApplicationLoginState.loggedIn) {
           return QuestionPage(
               appState: appState, qId: widget.pageName.substring(1));
+        } else {
+          return Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.background,
+            body: Center(
+              child: Column(
+                children: [
+                  Authentication(
+                      loginState: appState.loginState,
+                      email: appState.email,
+                      startLoginFlow: appState.startLoginFlow,
+                      verifyEmail: appState.verifyEmail,
+                      signInWithEmailAndPassword:
+                          appState.signInWithEmailAndPassword,
+                      cancelRegistration: appState.cancelRegistration,
+                      registerAccount: appState.registerAccount,
+                      signOut: appState.signOut),
+                ],
+              ),
+            ),
+          );
         }
         return Scaffold(
             body: Column(

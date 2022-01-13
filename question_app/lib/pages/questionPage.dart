@@ -31,6 +31,9 @@ class _QuestionPageState extends State<QuestionPage> {
       final isError = appState.questionLoadState == QuestionLoadState.error;
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
+        appBar: AppBar(
+          title: Text("Question  App"),
+        ),
         body: SizedBox(
             height: double.infinity,
             width: double.infinity,
@@ -44,7 +47,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     onSubmit: appState.addResponse,
                   ),
                 if (!isError &&
-                    appState.question != null &&
+                    appState.questionLoadState == QuestionLoadState.done &&
                     appState.hasVoted &&
                     appState.resultLoadState == ResultLoadState.done)
                   ResultsCard(
