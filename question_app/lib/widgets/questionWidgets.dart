@@ -149,21 +149,12 @@ class _QuestionOptionListState extends State<QuestionOptionList> {
 
 class QuestionOptionElement extends StatelessWidget {
   QuestionOptionElement({Key? key, this.option, this.height})
-      : super(key: key) {
-    color = ColorHasher.getColor(option ?? 'nothing');
-  }
+      : color = ColorHasher.getColor(option ?? 'nothing').withOpacity(1.0),
+        super(key: key);
 
   final String? option;
   final double? height;
-  late final Color color;
-
-  Color stringToColor(String string) {
-    int randomishValue1 = string.hashCode;
-    int randomishValue2 = string.length * 13;
-    int randomishValue3 = string[0].hashCode * 7;
-    return Color.fromARGB(255, (randomishValue1 - randomishValue2 * 4) % 225,
-        (randomishValue1 + randomishValue3 * 15) % 225, randomishValue1 % 225);
-  }
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
