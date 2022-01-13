@@ -40,10 +40,34 @@ class _SelectPageState extends State<SelectPage> {
     return Consumer<ApplicationState>(builder: (context, appState, _) {
       if (appState.loginState == ApplicationLoginState.loggedIn) {
         return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          appBar: AppBar(
+            title: Text("Peter's Question App"),
+            titleTextStyle: Theme.of(context)
+                .textTheme
+                .headline3!
+                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+            centerTitle: true,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: Authentication(
+                    loginState: appState.loginState,
+                    email: appState.email,
+                    startLoginFlow: appState.startLoginFlow,
+                    verifyEmail: appState.verifyEmail,
+                    signInWithEmailAndPassword:
+                        appState.signInWithEmailAndPassword,
+                    cancelRegistration: appState.cancelRegistration,
+                    registerAccount: appState.registerAccount,
+                    signOut: appState.signOut),
+              ),
+            ],
+          ),
           body: Center(
             child: Column(
               children: [
-                ...[
+                if (appState.loginState == ApplicationLoginState.loggedIn) ...[
                   for (QuestionSelectInfoContainer myQuestion
                       in appState.myQuestions ?? [])
                     //TODO: Remove handling this old idea
@@ -60,16 +84,6 @@ class _SelectPageState extends State<SelectPage> {
                   // Text(myQuestion.qText)
                 ],
                 StyledButton(child: Icon(Icons.add), onPressed: () {}),
-                Authentication(
-                    loginState: appState.loginState,
-                    email: appState.email,
-                    startLoginFlow: appState.startLoginFlow,
-                    verifyEmail: appState.verifyEmail,
-                    signInWithEmailAndPassword:
-                        appState.signInWithEmailAndPassword,
-                    cancelRegistration: appState.cancelRegistration,
-                    registerAccount: appState.registerAccount,
-                    signOut: appState.signOut),
               ],
             ),
           ),
@@ -77,6 +91,14 @@ class _SelectPageState extends State<SelectPage> {
       } else {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
+          appBar: AppBar(
+            title: Text("Peter's Question App"),
+            titleTextStyle: Theme.of(context)
+                .textTheme
+                .headline3!
+                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+            centerTitle: true,
+          ),
           body: Center(
             child: Column(
               children: [

@@ -20,7 +20,8 @@ class qSelectCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Material(
-        color: Colors.white.withOpacity(0.0),
+        color: Colors.white.withOpacity(1.0),
+        borderRadius: BorderRadius.circular(6.0),
         child: InkWell(
           focusColor: Colors.black,
           onTap: () {
