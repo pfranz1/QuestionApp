@@ -82,7 +82,10 @@ class _SelectPageState extends State<SelectPage> {
                 // Text(myQuestion.qText)
               ],
               if (loggedIn)
-                StyledButton(child: Icon(Icons.add), onPressed: () {}),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: StyledButton(child: Icon(Icons.add), onPressed: () {}),
+                ),
               if (!loggedIn)
                 Authentication(
                     loginState: appState.loginState,
