@@ -267,7 +267,7 @@ class ApplicationState extends ChangeNotifier {
   }
 
   void cancelRegistration() {
-    _loginState = ApplicationLoginState.emailAddress;
+    _loginState = ApplicationLoginState.loggedOut;
     notifyListeners();
   }
 
