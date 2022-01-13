@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'authenticationWidgets.dart';
 
+//Bless the good folks at flutter code labs for this base code that ive been using :D
+
 enum ApplicationLoginState {
   loggedOut,
   emailAddress,
@@ -286,6 +288,38 @@ class _RegisterFormState extends State<RegisterForm> {
     _emailController.text = widget.email;
   }
 
+  void _confirmCancel() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              "Cancel?",
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            content: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                StyledButton(
+                    child: Text('No'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }),
+                const SizedBox(
+                  width: 10,
+                ),
+                StyledButton(
+                    child: Text('Yes'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      widget.cancel();
+                    }),
+              ],
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -351,7 +385,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        onPressed: widget.cancel,
+                        onPressed: _confirmCancel,
                         focusNode: FocusNode(
                             canRequestFocus: false,
                             descendantsAreFocusable: false),
