@@ -1,5 +1,4 @@
-export 'authentication.dart';
-export 'authenticationComponents.dart';
-export 'questionView.dart';
-export 'resultsView.dart';
-export 'selectView.dart';
+export 'authentication/authentication.dart';
+export 'questionWidgets.dart';
+export 'resultsWidget.dart';
+export 'selectWidgets.dart';
