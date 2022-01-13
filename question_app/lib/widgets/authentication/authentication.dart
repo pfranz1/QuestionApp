@@ -76,8 +76,12 @@ class Authentication extends StatelessWidget {
       case ApplicationLoginState.emailAddress:
         return ComponentCardWrapper(
           child: EmailForm(
-              callback: (email) => verifyEmail(
-                  email, (e) => _showErrorDialog(context, 'Invalid email', e))),
+            callback: (email) => verifyEmail(
+                email, (e) => _showErrorDialog(context, 'Invalid email', e)),
+            cancel: () {
+              cancelRegistration();
+            },
+          ),
         );
       case ApplicationLoginState.password:
         return ComponentCardWrapper(
@@ -189,8 +193,9 @@ class ComponentCardWrapper extends StatelessWidget {
 }
 
 class EmailForm extends StatefulWidget {
-  const EmailForm({required this.callback});
+  const EmailForm({required this.callback, required this.cancel});
   final void Function(String email) callback;
+  final void Function() cancel;
   @override
   _EmailFormState createState() => _EmailFormState();
 }
@@ -233,22 +238,34 @@ class _EmailFormState extends State<EmailForm> {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 16.0, horizontal: 30),
-                      child: StyledButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            widget.callback(_controller.text);
-                          }
-                        },
-                        child: Text(
-                          'NEXT',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1!
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant),
-                        ),
+                      child: Row(
+                        children: [
+                          TextButton(
+                            onPressed: widget.cancel,
+                            focusNode: FocusNode(
+                                canRequestFocus: false,
+                                descendantsAreFocusable: false),
+                            child: const Text('CANCEL'),
+                          ),
+                          const SizedBox(width: 16),
+                          StyledButton(
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                widget.callback(_controller.text);
+                              }
+                            },
+                            child: Text(
+                              'NEXT',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -295,10 +312,15 @@ class _RegisterFormState extends State<RegisterForm> {
           return AlertDialog(
             title: Text(
               "Cancel?",
-              style: Theme.of(context).textTheme.headline4,
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline4!
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
             ),
             content: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 StyledButton(
                     child: Text('No'),
