@@ -32,8 +32,8 @@ class _QuestionPageState extends State<QuestionPage> {
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
-          title: Text("Question  App"),
-        ),
+            // title: Text("Question App"),
+            ),
         body: SizedBox(
             height: double.infinity,
             width: double.infinity,
@@ -58,25 +58,26 @@ class _QuestionPageState extends State<QuestionPage> {
                         ),
                       if (appState.resultLoadState == ResultLoadState.loading)
                         Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.45,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 2.0),
-                                  color: Theme.of(context).colorScheme.surface,
+                          padding: const EdgeInsets.all(16.0),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.45,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 2.0),
+                              color: Theme.of(context).colorScheme.surface,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text('Fetching results'),
+                                SizedBox(
+                                  height: 10,
                                 ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Text('Fetching results'),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    CircularProgressIndicator(),
-                                  ],
-                                )))
+                                CircularProgressIndicator(),
+                              ],
+                            ),
+                          ),
+                        )
                     ],
                   ),
                 if (isError) const Center(child: ErrorCard()),
