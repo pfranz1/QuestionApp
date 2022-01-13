@@ -67,40 +67,49 @@ class _SelectPageState extends State<SelectPage> {
               ),
           ],
         ),
-        body: Center(
-          child: Column(
-            children: [
-              if (loggedIn) ...[
-                for (QuestionSelectInfoContainer myQuestion
-                    in appState.myQuestions ?? [])
-                  qSelectCard(
-                    qId: myQuestion.qId,
-                    qText: myQuestion.qText,
-                    onSelect: () {
-                      navigateToQuestion(
-                          myQuestion.qId, myQuestion.hasVoted, appState);
-                    },
-                  )
-                // Text(myQuestion.qText)
-              ],
-              if (loggedIn)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: StyledButton(child: Icon(Icons.add), onPressed: () {}),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    if (loggedIn) ...[
+                      for (QuestionSelectInfoContainer myQuestion
+                          in appState.myQuestions ?? [])
+                        qSelectCard(
+                          qId: myQuestion.qId,
+                          qText: myQuestion.qText,
+                          onSelect: () {
+                            navigateToQuestion(
+                                myQuestion.qId, myQuestion.hasVoted, appState);
+                          },
+                        )
+                      // Text(myQuestion.qText)
+                    ],
+                    if (loggedIn)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: StyledButton(
+                            child: Icon(Icons.add), onPressed: () {}),
+                      ),
+                    if (!loggedIn)
+                      Authentication(
+                          loginState: appState.loginState,
+                          email: appState.email,
+                          startLoginFlow: appState.startLoginFlow,
+                          verifyEmail: appState.verifyEmail,
+                          signInWithEmailAndPassword:
+                              appState.signInWithEmailAndPassword,
+                          cancelRegistration: appState.cancelRegistration,
+                          registerAccount: appState.registerAccount,
+                          signOut: appState.signOut),
+                  ],
                 ),
-              if (!loggedIn)
-                Authentication(
-                    loginState: appState.loginState,
-                    email: appState.email,
-                    startLoginFlow: appState.startLoginFlow,
-                    verifyEmail: appState.verifyEmail,
-                    signInWithEmailAndPassword:
-                        appState.signInWithEmailAndPassword,
-                    cancelRegistration: appState.cancelRegistration,
-                    registerAccount: appState.registerAccount,
-                    signOut: appState.signOut),
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       );
     });
