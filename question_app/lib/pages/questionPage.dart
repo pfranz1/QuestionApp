@@ -62,11 +62,13 @@ class _QuestionPageState extends State<QuestionPage> {
                             child: Container(
                                 height:
                                     MediaQuery.of(context).size.height * 0.45,
+                                width: double.infinity,
                                 decoration: BoxDecoration(
                                   border: Border.all(width: 2.0),
                                   color: Theme.of(context).colorScheme.surface,
                                 ),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: const [
                                     Text('Fetching results'),
                                     SizedBox(
