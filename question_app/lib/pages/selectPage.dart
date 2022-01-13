@@ -38,19 +38,20 @@ class _SelectPageState extends State<SelectPage> {
     //     registerAccount: appState.registerAccount,
     //     signOut: appState.signOut);
     return Consumer<ApplicationState>(builder: (context, appState, _) {
-      if (appState.loginState == ApplicationLoginState.loggedIn) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
-          appBar: AppBar(
-            title: Text("Peter's Question App"),
-            titleTextStyle: Theme.of(context)
-                .textTheme
-                .headline3!
-                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-            centerTitle: true,
-            actions: [
+      final loggedIn = appState.loginState == ApplicationLoginState.loggedIn;
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        appBar: AppBar(
+          title: const Text("Peter's Question App"),
+          titleTextStyle: Theme.of(context)
+              .textTheme
+              .headline3!
+              .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+          centerTitle: true,
+          actions: [
+            if (loggedIn)
               Padding(
-                padding: const EdgeInsets.only(right: 20),
+                padding: const EdgeInsets.only(top: 5, right: 20),
                 child: Authentication(
                     loginState: appState.loginState,
                     email: appState.email,
@@ -62,46 +63,27 @@ class _SelectPageState extends State<SelectPage> {
                     registerAccount: appState.registerAccount,
                     signOut: appState.signOut),
               ),
-            ],
-          ),
-          body: Center(
-            child: Column(
-              children: [
-                if (appState.loginState == ApplicationLoginState.loggedIn) ...[
-                  for (QuestionSelectInfoContainer myQuestion
-                      in appState.myQuestions ?? [])
-                    //TODO: Remove handling this old idea
-                    if (myQuestion.qId != 'defaultQuestionId')
-                      qSelectCard(
-                        qId: myQuestion.qId,
-                        qText: myQuestion.qText,
-                        onSelect: () {
-                          navigateToQuestion(
-                              myQuestion.qId, myQuestion.hasVoted, appState);
-                        },
-                      )
-
-                  // Text(myQuestion.qText)
-                ],
-                StyledButton(child: Icon(Icons.add), onPressed: () {}),
+          ],
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              if (loggedIn) ...[
+                for (QuestionSelectInfoContainer myQuestion
+                    in appState.myQuestions ?? [])
+                  qSelectCard(
+                    qId: myQuestion.qId,
+                    qText: myQuestion.qText,
+                    onSelect: () {
+                      navigateToQuestion(
+                          myQuestion.qId, myQuestion.hasVoted, appState);
+                    },
+                  )
+                // Text(myQuestion.qText)
               ],
-            ),
-          ),
-        );
-      } else {
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
-          appBar: AppBar(
-            title: Text("Peter's Question App"),
-            titleTextStyle: Theme.of(context)
-                .textTheme
-                .headline3!
-                .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-            centerTitle: true,
-          ),
-          body: Center(
-            child: Column(
-              children: [
+              if (loggedIn)
+                StyledButton(child: Icon(Icons.add), onPressed: () {}),
+              if (!loggedIn)
                 Authentication(
                     loginState: appState.loginState,
                     email: appState.email,
@@ -112,11 +94,10 @@ class _SelectPageState extends State<SelectPage> {
                     cancelRegistration: appState.cancelRegistration,
                     registerAccount: appState.registerAccount,
                     signOut: appState.signOut),
-              ],
-            ),
+            ],
           ),
-        );
-      }
+        ),
+      );
     });
   }
 }
