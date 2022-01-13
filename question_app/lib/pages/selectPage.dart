@@ -42,7 +42,8 @@ class _SelectPageState extends State<SelectPage> {
       return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
-          title: const Text("Peter's Question App"),
+          title: const FittedBox(
+              fit: BoxFit.fitWidth, child: Text("Peter's Question App")),
           titleTextStyle: Theme.of(context)
               .textTheme
               .headline3!
