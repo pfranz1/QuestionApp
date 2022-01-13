@@ -51,17 +51,19 @@ class _SelectPageState extends State<SelectPage> {
           actions: [
             if (loggedIn)
               Padding(
-                padding: const EdgeInsets.only(top: 5, right: 20),
-                child: Authentication(
-                    loginState: appState.loginState,
-                    email: appState.email,
-                    startLoginFlow: appState.startLoginFlow,
-                    verifyEmail: appState.verifyEmail,
-                    signInWithEmailAndPassword:
-                        appState.signInWithEmailAndPassword,
-                    cancelRegistration: appState.cancelRegistration,
-                    registerAccount: appState.registerAccount,
-                    signOut: appState.signOut),
+                padding: const EdgeInsets.only(top: 5, right: 16),
+                child: Center(
+                  child: Authentication(
+                      loginState: appState.loginState,
+                      email: appState.email,
+                      startLoginFlow: appState.startLoginFlow,
+                      verifyEmail: appState.verifyEmail,
+                      signInWithEmailAndPassword:
+                          appState.signInWithEmailAndPassword,
+                      cancelRegistration: appState.cancelRegistration,
+                      registerAccount: appState.registerAccount,
+                      signOut: appState.signOut),
+                ),
               ),
           ],
         ),
