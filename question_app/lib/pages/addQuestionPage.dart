@@ -27,15 +27,17 @@ class _AddQuestionPageState extends State<AddQuestionPage> {
               child: Column(
                 children: [
                   Authentication(
-                      loginState: appState.loginState,
-                      email: appState.email,
-                      startLoginFlow: appState.startLoginFlow,
-                      verifyEmail: appState.verifyEmail,
-                      signInWithEmailAndPassword:
-                          appState.signInWithEmailAndPassword,
-                      cancelRegistration: appState.cancelRegistration,
-                      registerAccount: appState.registerAccount,
-                      signOut: appState.signOut),
+                    loginState: appState.loginState,
+                    email: appState.email,
+                    startLoginFlow: appState.startLoginFlow,
+                    verifyEmail: appState.verifyEmail,
+                    signInWithEmailAndPassword:
+                        appState.signInWithEmailAndPassword,
+                    cancelRegistration: appState.cancelRegistration,
+                    registerAccount: appState.registerAccount,
+                    signOut: appState.signOut,
+                    firstText: 'Sign In / Register',
+                  ),
                 ],
               ),
             ),

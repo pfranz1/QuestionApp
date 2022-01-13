@@ -20,10 +20,12 @@ class Authentication extends StatelessWidget {
     required this.cancelRegistration,
     required this.registerAccount,
     required this.signOut,
+    this.firstText = 'Sign in',
   });
 
   final ApplicationLoginState loginState;
   final String? email;
+  final String firstText;
   final void Function() startLoginFlow;
   final void Function(
     String email,
@@ -59,7 +61,7 @@ class Authentication extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Text(
-                    'Sign In',
+                    firstText,
                     style: Theme.of(context).textTheme.headline3!.copyWith(
                           color: Theme.of(context).colorScheme.onSurface,
                         ),

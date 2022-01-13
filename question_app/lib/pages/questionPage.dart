@@ -48,11 +48,34 @@ class _QuestionPageState extends State<QuestionPage> {
                   ),
                 if (!isError &&
                     appState.questionLoadState == QuestionLoadState.done &&
-                    appState.hasVoted &&
-                    appState.resultLoadState == ResultLoadState.done)
-                  ResultsCard(
-                    results: appState.results!,
-                    options: appState.question!.options,
+                    appState.hasVoted)
+                  Column(
+                    children: [
+                      if (appState.resultLoadState == ResultLoadState.done)
+                        ResultsCard(
+                          results: appState.results!,
+                          options: appState.question!.options,
+                        ),
+                      if (appState.resultLoadState == ResultLoadState.loading)
+                        Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.45,
+                                decoration: BoxDecoration(
+                                  border: Border.all(width: 2.0),
+                                  color: Theme.of(context).colorScheme.surface,
+                                ),
+                                child: Column(
+                                  children: const [
+                                    Text('Fetching results'),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    CircularProgressIndicator(),
+                                  ],
+                                )))
+                    ],
                   ),
                 if (isError) const Center(child: ErrorCard()),
                 if (isError)

@@ -51,13 +51,16 @@ class ApplicationState extends ChangeNotifier {
             .snapshots()
             .listen((snapshot) {
           _myQuestions = [];
-          for (QueryDocumentSnapshot<Map<String, dynamic>> doc
-              in snapshot.docs) {
-            _myQuestions!.add(QuestionSelectInfoContainer(
-                qId: doc.data()['qId'] as String,
-                qText: doc.data()['qText'] as String,
-                hasVoted: doc.data()['hasVoted'] as bool));
+          if (snapshot.docs.isNotEmpty) {
+            for (QueryDocumentSnapshot<Map<String, dynamic>> doc
+                in snapshot.docs) {
+              _myQuestions!.add(QuestionSelectInfoContainer(
+                  qId: doc.data()['qId'] as String,
+                  qText: doc.data()['qText'] as String,
+                  hasVoted: doc.data()['hasVoted'] as bool));
+            }
           }
+
           notifyListeners();
         });
       } else {
@@ -286,15 +289,15 @@ class ApplicationState extends ChangeNotifier {
       };
 
       await usersRef.doc(credential.user!.uid).set(userData);
-      Map<String, dynamic> questionData = {
-        'qId': 'defaultQuestionId',
-        'isOwner': false,
-        'qText': 'defaultQuestion',
-      };
-      await usersRef
-          .doc(credential.user!.uid)
-          .collection('addedQuestions')
-          .add(questionData);
+      // Map<String, dynamic> questionData = {
+      //   'qId': 'defaultQuestionId',
+      //   'isOwner': false,
+      //   'qText': 'defaultQuestion',
+      // };
+      // await usersRef
+      //     .doc(credential.user!.uid)
+      //     .collection('addedQuestions')
+      //     .add(questionData);
     } on FirebaseAuthException catch (e) {
       errorCallback(e);
     }
