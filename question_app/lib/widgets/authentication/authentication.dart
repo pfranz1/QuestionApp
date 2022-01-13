@@ -213,6 +213,7 @@ class _EmailFormState extends State<EmailForm> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
                     controller: _controller,
+                    autofocus: true,
                     decoration: const InputDecoration(
                       hintText: 'Enter your email',
                     ),
@@ -242,7 +243,9 @@ class _EmailFormState extends State<EmailForm> {
                               .textTheme
                               .bodyText1!
                               .copyWith(
-                                  color: Theme.of(context).colorScheme.primary),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant),
                         ),
                       ),
                     ),
@@ -314,6 +317,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: TextFormField(
                     controller: _displayNameController,
+                    autofocus: true,
                     decoration: const InputDecoration(
                       hintText: 'Display Name',
                     ),
@@ -348,6 +352,9 @@ class _RegisterFormState extends State<RegisterForm> {
                     children: [
                       TextButton(
                         onPressed: widget.cancel,
+                        focusNode: FocusNode(
+                            canRequestFocus: false,
+                            descendantsAreFocusable: false),
                         child: const Text('CANCEL'),
                       ),
                       const SizedBox(width: 16),
@@ -432,6 +439,7 @@ class _PasswordFormState extends State<PasswordForm> {
                     decoration: const InputDecoration(
                       hintText: 'Password',
                     ),
+                    autofocus: true,
                     obscureText: true,
                     validator: (value) {
                       if (value!.isEmpty) {
