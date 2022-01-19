@@ -11,6 +11,6 @@ class ColorHasher {
         centerLine - increment * plusOrMinus * 4,
         centerLine + increment * plusOrMinus * 7,
         centerLine - increment * plusOrMinus * 9,
-        255);
+        0);
   }
 }
