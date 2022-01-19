@@ -214,28 +214,35 @@ class _ResultsCardState extends State<ResultsCard> {
   Widget get _loadedWidget {
     final lastSnapshots = resultsContainer.frames.last.snapshots;
 
-    return Container(
-      child: Column(
-        children: [
-          QuestionHeader(
-            questionText: widget.question.questionText,
-          ),
-          // ...[
-          //   for (final snapshot in resultsContainer.frames.last.snapshots)
-          //     SingleResultCard(snapshot: snapshot)
-          // ],
-          ...[
-            for (final id in resultsContainer.finalOrdering
-                .split("")
-                .map((element) => int.parse(element)))
-              SingleResultCard(
-                snapshot: lastSnapshots[id],
-                optionText: widget.question.options[id],
-              )
-          ]
-        ],
-      ),
-    );
+    return Builder(builder: (context) {
+      final double avaliableHeight = MediaQuery.of(context).size.height * 0.45;
+      final double avaliableHeightPerElement =
+          avaliableHeight / widget.question.options.length;
+
+      return Container(
+        child: Column(
+          children: [
+            QuestionHeader(
+              questionText: widget.question.questionText,
+            ),
+            // ...[
+            //   for (final snapshot in resultsContainer.frames.last.snapshots)
+            //     SingleResultCard(snapshot: snapshot)
+            // ],
+            ...[
+              for (final id in resultsContainer.finalOrdering
+                  .split("")
+                  .map((element) => int.parse(element)))
+                SingleResultCard(
+                  snapshot: lastSnapshots[id],
+                  optionText: widget.question.options[id],
+                  height: avaliableHeightPerElement,
+                )
+            ]
+          ],
+        ),
+      );
+    });
   }
 
   Widget get _loadingWidget {
@@ -267,18 +274,24 @@ class _ResultsCardState extends State<ResultsCard> {
 }
 
 class SingleResultCard extends StatelessWidget {
-  SingleResultCard({Key? key, required this.snapshot, required this.optionText})
+  SingleResultCard(
+      {Key? key,
+      required this.snapshot,
+      required this.optionText,
+      required this.height})
       : color = ColorHasher.getColor(optionText),
         super(key: key);
 
   final Color color;
   final String optionText;
+  final double height;
 
   final ElementVCSnapshot snapshot;
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      constraints: BoxConstraints(minHeight: 50, minWidth: 100),
+      height: height,
       decoration: BoxDecoration(color: color.withOpacity(1.0)),
       child: Center(
           child: Text(
