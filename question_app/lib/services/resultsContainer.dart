@@ -12,6 +12,7 @@ class ResultsContainer extends ChangeNotifier {
   ComputationState resolutionComputed = ComputationState.loading;
   late final List<TabulationFrame> frames;
   late final String winner;
+  late final String finalOrdering;
 
   ResultsContainer(this.results, this.options);
 
@@ -168,6 +169,8 @@ class ResultsContainer extends ChangeNotifier {
     frames = tabulationFrames;
     voteCollectors.sort();
     winner = options[voteCollectors.last.id];
+    finalOrdering = voteCollectors.reversed.fold(
+        "", (previousValue, element) => previousValue + element.id.toString());
     //1,0,2, 0,1,2,
     resolutionComputed = ComputationState.done;
     notifyListeners();

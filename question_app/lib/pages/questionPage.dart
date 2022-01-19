@@ -54,7 +54,7 @@ class _QuestionPageState extends State<QuestionPage> {
                       if (appState.resultLoadState == ResultLoadState.done)
                         ResultsCard(
                           results: appState.results!,
-                          options: appState.question!.options,
+                          question: appState.question!,
                         ),
                       if (appState.resultLoadState == ResultLoadState.loading)
                         Padding(
