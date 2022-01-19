@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:question_app/models/question.dart';
 import 'package:question_app/services/services.dart';
@@ -219,6 +221,9 @@ class _ResultsCardState extends State<ResultsCard> {
       final double avaliableHeightPerElement =
           avaliableHeight / widget.question.options.length;
 
+      final double padding = 16.0;
+      final double avaliableWidth = MediaQuery.of(context).size.width;
+
       return Container(
         child: Column(
           children: [
@@ -237,6 +242,9 @@ class _ResultsCardState extends State<ResultsCard> {
                   snapshot: lastSnapshots[id],
                   optionText: widget.question.options[id],
                   height: avaliableHeightPerElement,
+                  maxWidth: avaliableWidth,
+                  percent: (lastSnapshots[id].votes /
+                      resultsContainer.results.length),
                 )
             ]
           ],
@@ -274,32 +282,45 @@ class _ResultsCardState extends State<ResultsCard> {
 }
 
 class SingleResultCard extends StatelessWidget {
-  SingleResultCard(
-      {Key? key,
-      required this.snapshot,
-      required this.optionText,
-      required this.height})
-      : color = ColorHasher.getColor(optionText),
+  SingleResultCard({
+    Key? key,
+    required this.snapshot,
+    required this.optionText,
+    required this.height,
+    required this.percent,
+    required double maxWidth,
+  })  : color = ColorHasher.getColor(optionText),
+        width = maxWidth * percent,
         super(key: key);
 
   final Color color;
   final String optionText;
+
   final double height;
+  late final double width;
+
+  final double percent;
 
   final ElementVCSnapshot snapshot;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(minHeight: 50, minWidth: 100),
-      height: height,
-      decoration: BoxDecoration(color: color.withOpacity(1.0)),
-      child: Center(
-          child: Text(
-        "$optionText ${snapshot.votes}",
-        style: Theme.of(context).textTheme.headline4!.copyWith(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            color: Theme.of(context).colorScheme.onSurface),
-      )),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          constraints: const BoxConstraints(minHeight: 50, minWidth: 100),
+          height: height,
+          width: width,
+          decoration: BoxDecoration(color: color.withOpacity(1.0)),
+          child: Center(
+              child: Text(
+            "$optionText ${snapshot.votes}",
+            style: Theme.of(context).textTheme.headline4!.copyWith(
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                color: Theme.of(context).colorScheme.onSurface),
+          )),
+        ),
+      ],
     );
   }
 }
