@@ -314,25 +314,7 @@ class SingleResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          decoration: BoxDecoration(color: color),
-          child: Center(
-              child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              color: Theme.of(context).colorScheme.surface,
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  "$optionText",
-                  style: Theme.of(context).textTheme.headline4!.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                ),
-              ),
-            ),
-          )),
-        ),
+        TopResultBar(color: color, optionText: optionText),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -342,37 +324,92 @@ class SingleResultCard extends StatelessWidget {
               width: growableRectangleWidth,
               decoration: BoxDecoration(color: color),
             ),
-            Container(
-              height: height,
-              width: votingInfoWidth,
-              decoration:
-                  BoxDecoration(color: Theme.of(context).colorScheme.surface),
-              child: Builder(builder: (context) {
-                final TextStyle textStyle = Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(fontSize: 16.0);
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "${percentText}",
-                      style: textStyle,
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      "${votes} Votes",
-                      style: textStyle,
-                    )
-                  ],
-                );
-              }),
-            )
+            VotingInfo(
+                height: height,
+                votingInfoWidth: votingInfoWidth,
+                percentText: percentText,
+                votes: votes)
           ],
         ),
       ],
+    );
+  }
+}
+
+class TopResultBar extends StatelessWidget {
+  const TopResultBar({
+    Key? key,
+    required this.color,
+    required this.optionText,
+  }) : super(key: key);
+
+  final Color color;
+  final String optionText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(color: color),
+      child: Center(
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          color: Theme.of(context).colorScheme.surface,
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              "$optionText",
+              style: Theme.of(context).textTheme.headline4!.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+            ),
+          ),
+        ),
+      )),
+    );
+  }
+}
+
+class VotingInfo extends StatelessWidget {
+  const VotingInfo({
+    Key? key,
+    required this.height,
+    required this.votingInfoWidth,
+    required this.percentText,
+    required this.votes,
+  }) : super(key: key);
+
+  final double height;
+  final double votingInfoWidth;
+  final String percentText;
+  final String votes;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: votingInfoWidth,
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
+      child: Builder(builder: (context) {
+        final TextStyle textStyle =
+            Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16.0);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "${percentText}",
+              style: textStyle,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Text(
+              "${votes} Votes",
+              style: textStyle,
+            )
+          ],
+        );
+      }),
     );
   }
 }
