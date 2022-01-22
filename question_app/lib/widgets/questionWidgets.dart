@@ -312,26 +312,29 @@ class SingleResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TopResultBar(color: color, optionText: optionText),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              constraints: const BoxConstraints(minHeight: 50, minWidth: 0),
-              height: height,
-              width: growableRectangleWidth,
-              decoration: BoxDecoration(color: color),
-            ),
-            VotingInfo(
+    return Container(
+      color: Color.lerp(Colors.black, color, 0.25),
+      child: Column(
+        children: [
+          TopResultBar(color: color, optionText: optionText),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                constraints: const BoxConstraints(minHeight: 50, minWidth: 0),
                 height: height,
-                votingInfoWidth: votingInfoWidth,
-                percentText: percentText,
-                votes: votes)
-          ],
-        ),
-      ],
+                width: growableRectangleWidth,
+                decoration: BoxDecoration(color: color),
+              ),
+              VotingInfo(
+                  height: height,
+                  votingInfoWidth: votingInfoWidth,
+                  percentText: percentText,
+                  votes: votes)
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -349,7 +352,10 @@ class TopResultBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: color),
+      decoration: BoxDecoration(
+          color: color,
+          border:
+              Border(bottom: BorderSide(color: Colors.black54, width: 3.0))),
       child: Center(
           child: Padding(
         padding: const EdgeInsets.all(8.0),
