@@ -309,6 +309,7 @@ class SingleResultCard extends StatelessWidget {
   final double percent;
 
   final ElementVCSnapshot snapshot;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -316,11 +317,20 @@ class SingleResultCard extends StatelessWidget {
         Container(
           decoration: BoxDecoration(color: color),
           child: Center(
-              child: Text(
-            "$optionText",
-            style: Theme.of(context).textTheme.headline4!.copyWith(
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                color: Theme.of(context).colorScheme.onSurface),
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              color: Theme.of(context).colorScheme.surface,
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  "$optionText",
+                  style: Theme.of(context).textTheme.headline4!.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
+              ),
+            ),
           )),
         ),
         Row(
@@ -337,9 +347,28 @@ class SingleResultCard extends StatelessWidget {
               width: votingInfoWidth,
               decoration:
                   BoxDecoration(color: Theme.of(context).colorScheme.surface),
-              child: Column(
-                children: [Text("${percentText}"), Text("${votes} Votes")],
-              ),
+              child: Builder(builder: (context) {
+                final TextStyle textStyle = Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(fontSize: 16.0);
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${percentText}",
+                      style: textStyle,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      "${votes} Votes",
+                      style: textStyle,
+                    )
+                  ],
+                );
+              }),
             )
           ],
         ),
