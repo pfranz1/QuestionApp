@@ -245,6 +245,7 @@ class _ResultsCardState extends State<ResultsCard> {
                   maxWidth: avaliableWidth,
                   percent: (lastSnapshots[id].votes /
                       resultsContainer.results.length),
+                  votes: lastSnapshots[id].votes.toString(),
                 )
             ]
           ],
@@ -288,37 +289,59 @@ class SingleResultCard extends StatelessWidget {
     required this.optionText,
     required this.height,
     required this.percent,
+    required this.votes,
     required double maxWidth,
-  })  : color = ColorHasher.getColor(optionText),
-        width = maxWidth * percent,
+  })  : color = ColorHasher.getColor(optionText).withOpacity(1.0),
+        percentText = (percent * 100).toStringAsPrecision(4) + "%",
+        votingInfoWidth = maxWidth * 0.15,
+        growableRectangleWidth = (maxWidth - maxWidth * 0.15) * percent,
         super(key: key);
 
   final Color color;
   final String optionText;
+  final String votes;
+  final String percentText;
 
   final double height;
-  late final double width;
+  final double votingInfoWidth;
+  final double growableRectangleWidth;
 
   final double percent;
 
   final ElementVCSnapshot snapshot;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+    return Column(
       children: [
         Container(
-          constraints: const BoxConstraints(minHeight: 50, minWidth: 100),
-          height: height,
-          width: width,
-          decoration: BoxDecoration(color: color.withOpacity(1.0)),
+          decoration: BoxDecoration(color: color),
           child: Center(
               child: Text(
-            "$optionText ${snapshot.votes}",
+            "$optionText",
             style: Theme.of(context).textTheme.headline4!.copyWith(
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 color: Theme.of(context).colorScheme.onSurface),
           )),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              constraints: const BoxConstraints(minHeight: 50, minWidth: 0),
+              height: height,
+              width: growableRectangleWidth,
+              decoration: BoxDecoration(color: color),
+            ),
+            Container(
+              height: height,
+              width: votingInfoWidth,
+              decoration:
+                  BoxDecoration(color: Theme.of(context).colorScheme.surface),
+              child: Column(
+                children: [Text("${percentText}"), Text("${votes} Votes")],
+              ),
+            )
+          ],
         ),
       ],
     );
