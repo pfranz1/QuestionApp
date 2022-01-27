@@ -271,7 +271,10 @@ class _ResultsCardState extends State<ResultsCard> {
                           votes: currentSnapshot[id].votes.toString(),
                         ),
                       ),
-                    CircleIndicatorBar(currentSelection: selectedFrame),
+                    CircleIndicatorBar(
+                      currentSelection: selectedFrame,
+                      numOfBalls: resultsContainer.frames.length,
+                    ),
                   ],
                 ],
               ),
@@ -312,15 +315,17 @@ class _ResultsCardState extends State<ResultsCard> {
 
 class CircleIndicatorBar extends StatelessWidget {
   final int currentSelection;
+  final int numOfBalls;
   static final double _ballSize = 25;
 
-  CircleIndicatorBar({required this.currentSelection, Key? key})
+  CircleIndicatorBar(
+      {required this.currentSelection, required this.numOfBalls, Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < numOfBalls; i++) {
       Widget next;
       final bool isSelected = i == currentSelection;
       next = IndicatorBall(
