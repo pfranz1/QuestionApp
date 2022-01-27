@@ -216,75 +216,69 @@ class _ResultsCardState extends State<ResultsCard> {
   Widget get _loadedWidget {
     assert(selectedFrame < resultsContainer.frames.length);
     final currentSnapshot = resultsContainer.frames[selectedFrame].snapshots;
+    final double avaliableHeight = MediaQuery.of(context).size.height * 0.45;
+    final double avaliableHeightPerElement =
+        avaliableHeight / widget.question.options.length;
 
-    return Builder(builder: (context) {
-      final double avaliableHeight = MediaQuery.of(context).size.height * 0.45;
-      final double avaliableHeightPerElement =
-          avaliableHeight / widget.question.options.length;
+    final double padding = 16.0;
+    final double avaliableWidth = MediaQuery.of(context).size.width;
+    final Color resultCardColor = Theme.of(context).colorScheme.surface;
 
-      final double padding = 16.0;
-      final double avaliableWidth = MediaQuery.of(context).size.width;
-      final Color resultCardColor = Theme.of(context).colorScheme.surface;
-
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          child: Column(
-            children: [
-              QuestionHeader(
-                questionText: widget.question.questionText,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        child: Column(
+          children: [
+            QuestionHeader(
+              questionText: widget.question.questionText,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            //Card that the colored boxes with results sit ontop
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: 1.0),
+                borderRadius: BorderRadius.circular(16.0),
+                color: Theme.of(context).colorScheme.surface,
+                gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Color.lerp(resultCardColor, Colors.white, 0.2)!,
+                      Color.lerp(resultCardColor, Colors.black, 0.2)!,
+                    ]),
               ),
-              SizedBox(
-                height: 15,
-              ),
-              // ...[
-              //   for (final snapshot in resultsContainer.frames.last.snapshots)
-              //     SingleResultCard(snapshot: snapshot)
-              // ],
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1.0),
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Theme.of(context).colorScheme.surface,
-                  gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                      colors: [
-                        Color.lerp(resultCardColor, Colors.white, 0.2)!,
-                        Color.lerp(resultCardColor, Colors.black, 0.2)!,
-                      ]),
-                ),
-                child: Column(
-                  children: [
-                    ...[
-                      SizedBox(
-                        height: 16.0,
-                      ),
-                      for (final id in resultsContainer.finalOrdering
-                          .split("")
-                          .map((element) => int.parse(element)))
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: 16.0, left: 16.0, right: 16.0),
-                          child: SingleResultCard(
-                            snapshot: currentSnapshot[id],
-                            optionText: widget.question.options[id],
-                            height: avaliableHeightPerElement,
-                            maxWidth: avaliableWidth,
-                            percent: (currentSnapshot[id].votes /
-                                resultsContainer.results.length),
-                            votes: currentSnapshot[id].votes.toString(),
-                          ),
-                        )
-                    ],
+              child: Column(
+                children: [
+                  ...[
+                    const SizedBox(
+                      height: 16.0,
+                    ),
+                    for (final id in resultsContainer.finalOrdering
+                        .split("")
+                        .map((element) => int.parse(element)))
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: 16.0, left: 16.0, right: 16.0),
+                        child: SingleResultCard(
+                          snapshot: currentSnapshot[id],
+                          optionText: widget.question.options[id],
+                          height: avaliableHeightPerElement,
+                          maxWidth: avaliableWidth,
+                          percent: (currentSnapshot[id].votes /
+                              resultsContainer.results.length),
+                          votes: currentSnapshot[id].votes.toString(),
+                        ),
+                      )
                   ],
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    });
+      ),
+    );
   }
 
   Widget get _loadingWidget {
