@@ -270,12 +270,12 @@ class _ResultsCardState extends State<ResultsCard> {
                               resultsContainer.results.length),
                           votes: currentSnapshot[id].votes.toString(),
                         ),
-                      )
+                      ),
+                    CircleIndicatorBar(currentSelection: selectedFrame),
                   ],
                 ],
               ),
             ),
-            CircleIndicatorBar(currentSelection: selectedFrame)
           ],
         ),
       ),
@@ -330,13 +330,10 @@ class CircleIndicatorBar extends StatelessWidget {
       children.add(next);
     }
 
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: children,
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: children,
     );
   }
 }
@@ -358,7 +355,7 @@ class IndicatorBall extends StatelessWidget {
         ? Theme.of(context).colorScheme.onSurface.withAlpha(255)
         : Theme.of(context).colorScheme.onSurface.withAlpha(155);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+      padding: const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 4.0),
       child: Container(
           height: _ballSize,
           width: _ballSize,
