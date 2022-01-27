@@ -354,11 +354,16 @@ class IndicatorBall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: _ballSize,
-        width: _ballSize,
-        decoration:
-            const BoxDecoration(shape: BoxShape.circle, color: Colors.amber));
+    final color = isSelected
+        ? Theme.of(context).colorScheme.onSurface.withAlpha(255)
+        : Theme.of(context).colorScheme.onSurface.withAlpha(155);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+      child: Container(
+          height: _ballSize,
+          width: _ballSize,
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color)),
+    );
   }
 }
 
