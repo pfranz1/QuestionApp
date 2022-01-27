@@ -252,15 +252,16 @@ class _ResultsCardState extends State<ResultsCard> {
               child: Column(
                 children: [
                   ...[
+                    //Eyeballed this, just to make top look more balanced with bottom
                     const SizedBox(
-                      height: 16.0,
+                      height: 9,
                     ),
                     for (final id in resultsContainer.finalOrdering
                         .split("")
                         .map((element) => int.parse(element)))
                       Padding(
                         padding: const EdgeInsets.only(
-                            bottom: 16.0, left: 16.0, right: 16.0),
+                            top: 16.0, left: 16.0, right: 16.0),
                         child: SingleResultCard(
                           snapshot: currentSnapshot[id],
                           optionText: widget.question.options[id],
@@ -271,6 +272,9 @@ class _ResultsCardState extends State<ResultsCard> {
                           votes: currentSnapshot[id].votes.toString(),
                         ),
                       ),
+                    const SizedBox(
+                      height: 4,
+                    ),
                     CircleIndicatorBar(
                       currentSelection: selectedFrame,
                       numOfBalls: resultsContainer.frames.length,
