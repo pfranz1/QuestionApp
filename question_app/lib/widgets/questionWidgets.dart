@@ -426,7 +426,7 @@ class SingleResultCard extends StatelessWidget {
           border: Border.all(width: 2.0)),
       child: Column(
         children: [
-          TopResultBar(color: color, optionText: optionText),
+          SingleResultHeader(color: color, optionText: optionText),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -449,8 +449,8 @@ class SingleResultCard extends StatelessWidget {
   }
 }
 
-class TopResultBar extends StatelessWidget {
-  const TopResultBar({
+class SingleResultHeader extends StatelessWidget {
+  const SingleResultHeader({
     Key? key,
     required this.color,
     required this.optionText,
