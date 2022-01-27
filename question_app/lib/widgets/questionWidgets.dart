@@ -322,28 +322,43 @@ class CircleIndicatorBar extends StatelessWidget {
     List<Widget> children = [];
     for (int i = 0; i < 3; i++) {
       Widget next;
-      if (i == currentSelection) {
-        next = Container(
-            height: _ballSize,
-            width: _ballSize,
-            decoration: const BoxDecoration(
-                shape: BoxShape.circle, color: Colors.amber));
-      } else {
-        next = Container(
-            height: _ballSize,
-            width: _ballSize,
-            decoration: const BoxDecoration(
-                shape: BoxShape.circle, color: Colors.black));
-      }
+      final bool isSelected = i == currentSelection;
+      next = IndicatorBall(
+        ballSize: _ballSize,
+        isSelected: isSelected,
+      );
       children.add(next);
     }
 
-    return Container(
-      height: 50,
+    return Padding(
+      padding: EdgeInsets.all(8.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: children,
       ),
     );
+  }
+}
+
+class IndicatorBall extends StatelessWidget {
+  const IndicatorBall({
+    Key? key,
+    required double ballSize,
+    required this.isSelected,
+  })  : _ballSize = ballSize,
+        super(key: key);
+
+  final double _ballSize;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: _ballSize,
+        width: _ballSize,
+        decoration:
+            const BoxDecoration(shape: BoxShape.circle, color: Colors.amber));
   }
 }
 
