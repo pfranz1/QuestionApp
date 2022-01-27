@@ -74,7 +74,7 @@ class ResultsContainer extends ChangeNotifier {
    * if its a problem later i will fix it later. Would rather have soemthing ugly but done
    */
   Future<bool> computeResults() async {
-    print('compute result called');
+    print('computeResults was called');
     resolutionComputed = ComputationState.loading;
     notifyListeners();
     List<bool> isElementRemoved = List<bool>.filled(options.length, false);
@@ -93,8 +93,9 @@ class ResultsContainer extends ChangeNotifier {
         tabulationFrames.isEmpty || tabulationFrames.last.hasWinner != true) {
       final firstChoiceVotes = getVotesAtDepth(0, isElementRemoved);
       for (final votes in firstChoiceVotes.asMap().entries) {
+        // Had a really cool bug here where swaping these was leading to shortcicuit evaluation so i was skipping passing out votes
         hasWinner =
-            hasWinner || voteCollectors[votes.key].addVotes(votes.value);
+            voteCollectors[votes.key].addVotes(votes.value) || hasWinner;
       }
 
       //At this point i have tallied all of the votes and ensured that only active elements recived votes
