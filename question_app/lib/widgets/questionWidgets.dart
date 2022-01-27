@@ -286,6 +286,7 @@ class _ResultsCardState extends State<ResultsCard> {
                     CircleIndicatorBar(
                       currentSelection: selectedFrame,
                       numOfBalls: resultsContainer.frames.length,
+                      callback: _setSelectedFrame,
                     ),
                   ],
                 ],
@@ -328,10 +329,14 @@ class _ResultsCardState extends State<ResultsCard> {
 class CircleIndicatorBar extends StatelessWidget {
   final int currentSelection;
   final int numOfBalls;
+  final Function callback;
   static final double _ballSize = 25;
 
   CircleIndicatorBar(
-      {required this.currentSelection, required this.numOfBalls, Key? key})
+      {required this.currentSelection,
+      required this.numOfBalls,
+      required this.callback,
+      Key? key})
       : super(key: key);
 
   @override
@@ -340,9 +345,12 @@ class CircleIndicatorBar extends StatelessWidget {
     for (int i = 0; i < numOfBalls; i++) {
       Widget next;
       final bool isSelected = i == currentSelection;
-      next = IndicatorBall(
-        ballSize: _ballSize,
-        isSelected: isSelected,
+      next = InkWell(
+        onTap: () => callback(i),
+        child: IndicatorBall(
+          ballSize: _ballSize,
+          isSelected: isSelected,
+        ),
       );
       children.add(next);
     }
