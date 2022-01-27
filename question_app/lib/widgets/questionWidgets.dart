@@ -189,17 +189,16 @@ class QuestionOptionElement extends StatelessWidget {
 class ResultsCard extends StatefulWidget {
   ResultsCard({Key? key, required this.results, required this.question})
       : super(key: key);
-
   final List<String> results;
   final Question question;
 
-  @override
+  @override 
   _ResultsCardState createState() => _ResultsCardState();
-}
-
-class _ResultsCardState extends State<ResultsCard> {
+}  
+  
+class   _ResultsCardState extends State<ResultsCard> {
   late final ResultsContainer resultsContainer;
-
+  
   @override
   void initState() {
     resultsContainer =
@@ -207,7 +206,8 @@ class _ResultsCardState extends State<ResultsCard> {
     resultsContainer.addListener(() => setState(() {}));
     _computeResults();
     super.initState();
-  }
+  }  
+
 
   Future _computeResults() async {
     await resultsContainer.tryComputeResults();

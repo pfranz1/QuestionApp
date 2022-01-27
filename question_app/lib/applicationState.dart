@@ -192,6 +192,27 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<void> addResponse(String response) async {
+    Future<void> addFakeResponses(int numOfFakes, String sampleResponse) async {
+      final int numOptions = sampleResponse.length ~/ 2;
+      List<String> posValues = [];
+      for (int i = 0; i < numOptions; i++) {
+        posValues.add("$i,");
+      }
+      for (int i = 0; i < numOfFakes; i++) {
+        posValues.shuffle();
+        final fakeResponse = posValues.fold(
+            "", (previousValue, element) => previousValue.toString() + element);
+        FirebaseFirestore.instance
+            .collection('questions')
+            .doc(_questionId)
+            .collection('responses')
+            .doc()
+            .set(<String, dynamic>{
+          'response': fakeResponse,
+        });
+      }
+    }
+
     _hasVoted = true;
     //I want to add this new question to my added questions
 
@@ -208,6 +229,7 @@ class ApplicationState extends ChangeNotifier {
         .doc(_questionId)
         .set(hasVotedData);
 
+    // await addFakeResponses(10, response);
     getResponses();
 
     return FirebaseFirestore.instance
