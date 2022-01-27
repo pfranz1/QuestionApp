@@ -198,7 +198,7 @@ class ResultsCard extends StatefulWidget {
 
 class _ResultsCardState extends State<ResultsCard> {
   late final ResultsContainer resultsContainer;
-  int selectedFrame = 1;
+  int selectedFrame = 0;
 
   @override
   void initState() {
@@ -275,6 +275,7 @@ class _ResultsCardState extends State<ResultsCard> {
                 ],
               ),
             ),
+            CircleIndicatorBar(currentSelection: selectedFrame)
           ],
         ),
       ),
@@ -311,8 +312,10 @@ class _ResultsCardState extends State<ResultsCard> {
 
 class CircleIndicatorBar extends StatelessWidget {
   final int currentSelection;
+  static final double _ballSize = 25;
 
-  CircleIndicatorBar(this.currentSelection, Key? key) : super(key: key);
+  CircleIndicatorBar({required this.currentSelection, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -321,18 +324,25 @@ class CircleIndicatorBar extends StatelessWidget {
       Widget next;
       if (i == currentSelection) {
         next = Container(
+            height: _ballSize,
+            width: _ballSize,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.amber));
       } else {
         next = Container(
+            height: _ballSize,
+            width: _ballSize,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black));
       }
       children.add(next);
     }
 
-    return Row(
-      children: children,
+    return Container(
+      height: 50,
+      child: Row(
+        children: children,
+      ),
     );
   }
 }
