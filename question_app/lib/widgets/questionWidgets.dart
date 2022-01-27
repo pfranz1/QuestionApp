@@ -213,6 +213,14 @@ class _ResultsCardState extends State<ResultsCard> {
     await resultsContainer.tryComputeResults();
   }
 
+  void _setSelectedFrame(int newSelectedFrame) {
+    if (newSelectedFrame != selectedFrame) {
+      setState(() {
+        selectedFrame = newSelectedFrame;
+      });
+    }
+  }
+
   Widget get _loadedWidget {
     assert(selectedFrame < resultsContainer.frames.length);
     final currentSnapshot = resultsContainer.frames[selectedFrame].snapshots;
