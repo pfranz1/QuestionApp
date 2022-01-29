@@ -1,5 +1,6 @@
 import 'package:provider/provider.dart';
 import 'package:question_app/applicationState.dart';
+import 'package:question_app/pages/question/resultWidget.dart';
 
 import '../../models/models.dart';
 import '../../widgets/widgets.dart';
