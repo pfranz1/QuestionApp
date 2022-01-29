@@ -81,8 +81,10 @@ class QuestionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.0), color: Colors.white),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(4.0),
         child: Text(
           questionText ?? 'No question avaliable.',
           textAlign: TextAlign.center,

@@ -51,7 +51,7 @@ class _ResultsCardState extends State<ResultsCard> {
     final Color resultCardColor = Theme.of(context).colorScheme.surface;
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
         child: Column(
           children: [
@@ -70,8 +70,9 @@ class _ResultsCardState extends State<ResultsCard> {
                   .split("")
                   .map((element) => int.parse(element)))
                 Padding(
-                  padding:
-                      const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                  padding: const EdgeInsets.only(
+                    top: 16.0,
+                  ),
                   child: SingleResultCard(
                     snapshot: currentSnapshot[id],
                     optionText: widget.question.options[id],
