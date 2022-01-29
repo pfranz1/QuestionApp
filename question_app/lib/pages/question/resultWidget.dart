@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:question_app/models/question.dart';
 import 'package:question_app/pages/pages.dart';
@@ -173,7 +171,19 @@ class SingleResultCard extends StatelessWidget {
                 constraints: const BoxConstraints(minHeight: 50, minWidth: 0),
                 height: height,
                 width: growableRectangleWidth,
-                decoration: BoxDecoration(color: color),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        HSLColor.fromColor(color).withLightness(0.45).toColor(),
+                        HSLColor.fromColor(color).withLightness(0.6).toColor(),
+                      ],
+                      stops: [
+                        0.0,
+                        0.6
+                      ]),
+                ),
               ),
               VotingInfo(
                   height: height,
