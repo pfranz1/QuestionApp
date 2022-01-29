@@ -58,58 +58,39 @@ class _ResultsCardState extends State<ResultsCard> {
             const SizedBox(
               height: 15,
             ),
-            //Card that the colored boxes with results sit ontop
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 1.0),
-                borderRadius: BorderRadius.circular(16.0),
-                color: Theme.of(context).colorScheme.surface,
-                gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      Color.lerp(resultCardColor, Colors.white, 0.2)!,
-                      Color.lerp(resultCardColor, Colors.black, 0.2)!,
-                    ]),
+            ...[
+              QuestionHeader(
+                questionText: widget.question.questionText,
               ),
-              child: Column(
-                children: [
-                  ...[
-                    QuestionHeader(
-                      questionText: widget.question.questionText,
-                    ),
-                    //Eyeballed this, just to make top look more balanced with bottom
-                    const SizedBox(
-                      height: 9,
-                    ),
-                    for (final id in resultsContainer.finalOrdering
-                        .split("")
-                        .map((element) => int.parse(element)))
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 16.0, left: 16.0, right: 16.0),
-                        child: SingleResultCard(
-                          snapshot: currentSnapshot[id],
-                          optionText: widget.question.options[id],
-                          height: avaliableHeightPerElement,
-                          maxWidth: avaliableWidth,
-                          percent: (currentSnapshot[id].votes /
-                              resultsContainer.results.length),
-                          votes: currentSnapshot[id].votes.toString(),
-                        ),
-                      ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    CircleIndicatorBar(
-                      currentSelection: selectedFrame,
-                      numOfBalls: resultsContainer.frames.length,
-                      callback: _setSelectedFrame,
-                    ),
-                  ],
-                ],
+              //Eyeballed this, just to make top look more balanced with bottom
+              const SizedBox(
+                height: 9,
               ),
-            ),
+              for (final id in resultsContainer.finalOrdering
+                  .split("")
+                  .map((element) => int.parse(element)))
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                  child: SingleResultCard(
+                    snapshot: currentSnapshot[id],
+                    optionText: widget.question.options[id],
+                    height: avaliableHeightPerElement,
+                    maxWidth: avaliableWidth,
+                    percent: (currentSnapshot[id].votes /
+                        resultsContainer.results.length),
+                    votes: currentSnapshot[id].votes.toString(),
+                  ),
+                ),
+              const SizedBox(
+                height: 4,
+              ),
+              CircleIndicatorBar(
+                currentSelection: selectedFrame,
+                numOfBalls: resultsContainer.frames.length,
+                callback: _setSelectedFrame,
+              ),
+            ],
           ],
         ),
       ),
