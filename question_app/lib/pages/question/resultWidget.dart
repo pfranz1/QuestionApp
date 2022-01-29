@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:question_app/models/question.dart';
 import 'package:question_app/pages/pages.dart';
@@ -187,20 +189,32 @@ class SingleResultCard extends StatelessWidget {
 }
 
 class SingleResultHeader extends StatelessWidget {
-  const SingleResultHeader({
+  SingleResultHeader({
     Key? key,
     required this.color,
     required this.optionText,
-  }) : super(key: key);
+  })  : darkendColor = Color.lerp(color, Colors.black, 0.15)!,
+        lightendedColor = Color.lerp(color, Colors.white, 0.15)!,
+        super(key: key);
 
   final Color color;
+  final Color darkendColor;
+  final Color lightendedColor;
   final String optionText;
+
+  static const List<double> defaultStops = [0, 0.3, 0.5, 0.7, 1];
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: color,
+          gradient: LinearGradient(colors: [
+            darkendColor,
+            color,
+            lightendedColor,
+            color,
+            darkendColor,
+          ], stops: defaultStops),
           border:
               Border(bottom: BorderSide(color: Colors.black54, width: 3.0))),
       child: Center(
