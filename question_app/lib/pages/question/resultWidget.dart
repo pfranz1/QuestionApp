@@ -55,9 +55,6 @@ class _ResultsCardState extends State<ResultsCard> {
       child: Container(
         child: Column(
           children: [
-            QuestionHeader(
-              questionText: widget.question.questionText,
-            ),
             const SizedBox(
               height: 15,
             ),
@@ -78,6 +75,9 @@ class _ResultsCardState extends State<ResultsCard> {
               child: Column(
                 children: [
                   ...[
+                    QuestionHeader(
+                      questionText: widget.question.questionText,
+                    ),
                     //Eyeballed this, just to make top look more balanced with bottom
                     const SizedBox(
                       height: 9,
