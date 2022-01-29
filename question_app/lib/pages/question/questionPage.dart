@@ -1,8 +1,8 @@
 import 'package:provider/provider.dart';
 import 'package:question_app/applicationState.dart';
 
-import '../models/models.dart';
-import '../widgets/widgets.dart';
+import '../../models/models.dart';
+import '../../widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class QuestionPage extends StatefulWidget {

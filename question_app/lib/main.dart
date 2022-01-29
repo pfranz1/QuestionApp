@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:question_app/applicationState.dart';
-import 'package:question_app/pages/questionPage.dart';
+import 'package:question_app/pages/question/questionPage.dart';
 import 'package:question_app/services/routeGenerator.dart';
 import 'pages/pages.dart';
 
