@@ -30,63 +30,74 @@ class _QuestionPageState extends State<QuestionPage> {
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(builder: (context, appState, _) {
       final isError = appState.questionLoadState == QuestionLoadState.error;
-      return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        appBar: AppBar(
-            // title: Text("Question App"),
-            ),
-        body: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              children: [
-                if (appState.questionLoadState == QuestionLoadState.loading)
-                  CircularProgressIndicator(),
-                if (!isError && !appState.hasVoted)
-                  QuestionInterface(
-                    question: appState.question,
-                    onSubmit: appState.addResponse,
-                  ),
-                if (!isError &&
-                    appState.questionLoadState == QuestionLoadState.done &&
-                    appState.hasVoted)
-                  Column(
-                    children: [
-                      if (appState.resultLoadState == ResultLoadState.done)
-                        ResultsCard(
-                          results: appState.results!,
-                          question: appState.question!,
-                        ),
-                      if (appState.resultLoadState == ResultLoadState.loading)
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.45,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 2.0),
-                              color: Theme.of(context).colorScheme.surface,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text('Fetching results'),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                CircularProgressIndicator(),
-                              ],
-                            ),
+      return Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          colors: [
+            Color(0xFF38EF7D),
+            Color(0xFF11998E),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        )),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+              // title: Text("Question App"),
+              ),
+          body: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  if (appState.questionLoadState == QuestionLoadState.loading)
+                    CircularProgressIndicator(),
+                  if (!isError && !appState.hasVoted)
+                    QuestionInterface(
+                      question: appState.question,
+                      onSubmit: appState.addResponse,
+                    ),
+                  if (!isError &&
+                      appState.questionLoadState == QuestionLoadState.done &&
+                      appState.hasVoted)
+                    Column(
+                      children: [
+                        if (appState.resultLoadState == ResultLoadState.done)
+                          ResultsCard(
+                            results: appState.results!,
+                            question: appState.question!,
                           ),
-                        )
-                    ],
-                  ),
-                if (isError) const Center(child: ErrorCard()),
-                if (isError)
-                  StyledButton(
-                      child: const Text('Reload'), onPressed: appState.reload)
-              ],
-            )),
+                        if (appState.resultLoadState == ResultLoadState.loading)
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.45,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 2.0),
+                                color: Theme.of(context).colorScheme.surface,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text('Fetching results'),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  CircularProgressIndicator(),
+                                ],
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
+                  if (isError) const Center(child: ErrorCard()),
+                  if (isError)
+                    StyledButton(
+                        child: const Text('Reload'), onPressed: appState.reload)
+                ],
+              )),
+        ),
       );
     });
   }
