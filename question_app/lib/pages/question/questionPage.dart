@@ -36,8 +36,8 @@ class _QuestionPageState extends State<QuestionPage> {
             // title: Text("Question App"),
             ),
         body: SizedBox(
-            height: double.infinity,
-            width: double.infinity,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
                 if (appState.questionLoadState == QuestionLoadState.loading)
